@@ -83,17 +83,17 @@ The following example shows the `source-users-json` connector JSON configuration
 This will install the source connector `source-users-json` [(users_json.json)](connectors/users_json.json) which publishes JSON data in the Kafka topic `users-json`.
 
 ```
-curl -X POST http://localhost:8083/connectors 
-    -H "Content-Type: application/json" 
+curl -X POST http://localhost:8083/connectors \
+    -H "Content-Type: application/json" \
     --data @connectors/users_json.json
 ```
 
 With the following command we install the Avro source connector `source-users-avro` [(users_avro.json)](connectors/users_avro.json) which will publish Avro data in the Kafka topic `users-avro`.
 
 ```
-curl -X POST http://localhost:8083/connectors  
-    -H "Content-Type: application/json" 
-    --data @connectors/users_json.json
+curl -X POST http://localhost:8083/connectors \
+    -H "Content-Type: application/json" \
+    --data @connectors/users_avro.json
 ```
 
 
