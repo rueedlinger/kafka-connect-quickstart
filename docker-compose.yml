@@ -76,6 +76,8 @@ services:
       CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
       CONNECT_CONNECTOR_CLIENT_CONFIG_OVERRIDE_POLICY: "All"
+      CONNECT_ACCESS_CONTROL_ALLOW_ORIGIN: "*"
+      CONNECT_ACCESS_CONTROL_ALLOW_METHODS: "GET,OPTIONS,HEAD,POST,PUT,DELETE"
 
     volumes:
       - ./mount:/etc/kafka-connect/jars
