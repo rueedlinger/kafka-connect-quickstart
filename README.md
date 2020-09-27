@@ -101,7 +101,7 @@ curl -X POST http://localhost:8083/connectors
 > A detail description of the Kafka Connect Rest API can be found here, https://docs.confluent.io/current/connect/references/restapi.html
 
 
-## How to Install Other Connectors
+### How to Install Other Connectors
 
 If you want a special Connect plugin installed you have two options:
 
