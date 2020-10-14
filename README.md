@@ -6,8 +6,8 @@ versions:
 - Kafka 2.6
 - Java 11
 
-## Builds
-- 
+## CI Build
+- Builds the Java code and Docker image. ![Build Java & Docker](https://github.com/rueedlinger/kafka-connect-quickstart/workflows/Build%20Java%20&%20Docker/badge.svg)
 
 ## Getting Started
 ### Build and Startup the Environment
