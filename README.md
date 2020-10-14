@@ -1,9 +1,10 @@
 # Kafka Connect Quickstart
-This is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect). 
-This quickstart example uses the following versions to startup Docker containers with Docker Compose:
+This is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect) 
+and to deploy a Kafka Connect source and sink connector from a Maven project. This quickstart example uses the following 
+versions:
 - Confluent Platform 6.0.0 
 - Kafka 2.6
-- Kafdrop 3.27.0
+- Java 11
 
 ## Getting Started
 ### Build and Startup the Environment
@@ -13,19 +14,19 @@ To use the custom sink and source connectors we have to build them first with Ma
 mvn clean package
 ```
 
-Now we can build and start all Docker containers. 
+Now we can build and start the Docker containers. 
+
 ```
 docker-compose up --build
 ```
 
-his will start the following Docker containers:
+This will start the following Docker containers:
 - `zookeeper` => Apache Zookeeper (`confluentinc/cp-zookeeper`)
 - `broker` => Apache Kafka (`confluentinc/cp-kafka`)
 - `schema-registry`=> Schema Registry (`confluentinc/cp-schema-registry`)
 - `connect`=> Kafka Connect. This services uses a [custom Docker image](Dockerfile) which is based on `confluentinc/cp-kafka-connect-base`.
 - `kafdrop`=> Kafdrop – Kafka Web UI  (`obsidiandynamics/kafdrop`)
-
-> **[Kafdrop](https://github.com/obsidiandynamics/kafdrop)** is a web UI for viewing Kafka topics and browsing consumer groups. 
+- `connect-ui` => Kafka Connect UI from Lenses.io (`landoop/kafka-connect-ui`)
 
 When all containers are started you can access different services like 
 - **Kafka Connect Rest API** => http://localhost:8083/
@@ -34,7 +35,7 @@ When all containers are started you can access different services like
 - **kafka-connect-ui** from Lenses.io  => http://localhost:8000/
 
 
-By default Apache Avro is used as convertor when nothing else is set for value or key convertor in the connector settings. 
+By default, Apache Avro convertor will be used when nothing else is set for value or key convertor in the connector settings. 
 If you want to change the default settings just adapt the [docker-compose.yml](docker-compose.yml ) file for the Kafka Connect service.
 
 ```
@@ -64,13 +65,13 @@ When Kafka Connect is up and running you should see a response like this.
 ```
 
 
-In the [config](config) directory are the configuration files for Avro source and sink connector. 
-- LogSinkConnector
-- RandomSourceConnector
+In the [config](config) directory are the configuration files for the custom source and sink connector. 
+- [LogSinkConnector](src/main/java/ch/yax/connect/quickstart/sink)
+- [RandomSourceConnector](src/main/java/ch/yax/connect/quickstart/source)
 
 
-This will install the source connector `random-source` [(users_source.json)](config/users_source.json) which publishes random data in the 
-Kafka topic `random-data`.
+This will install the `RandomSourceConnector` [(random-source.json)](config/random-source.json) 
+which publishes random data in the Kafka topic `random-data`.
 
 ```
 curl -X POST http://localhost:8083/connectors  \
@@ -79,8 +80,8 @@ curl -X POST http://localhost:8083/connectors  \
 ```
 
 
-With the following command we install the LogSink connector `log-sink` [(users_avro.json)](connectors/users_avro.json) which will log the data from 
-the Kafka topic `random-data` to the console.
+With the following command we install the `LogSinkConnector` [(log-sink.json)](config/log-sink.json) 
+which will log the data from the Kafka topic `random-data` to the console.
 
 ```
 curl -X POST http://localhost:8083/connectors \
@@ -88,17 +89,16 @@ curl -X POST http://localhost:8083/connectors \
     --data @config/log-sink.json
 ```
 
-
-
 > A detail description of the Kafka Connect Rest API can be found here, https://docs.confluent.io/current/connect/references/restapi.html
 
 
 ### How to Install Other Connectors
 
-If you want a special Connect plugin installed you have two options:
+If you want a special Connect plugin installed you have three options:
 
-1. Download the JAR file and copy it in the [mount](mount) directory. This directory is automatically mounted 
-as Docker volume and configured as Connect plugin path (`CONNECT_PLUGIN_PATH`).
+1. Download the JAR file and copy it in the [mount](mount) directory. This directory will be 
+automatically mounted as Docker volume to the Kafka Connect plugin path `/etc/kafka-connect/jars` 
+(`CONNECT_PLUGIN_PATH`).
 
 ```
 services:
@@ -114,7 +114,7 @@ services:
 ```
 
 
-2. Adapted the [Dockerfile](Dockerfile) and install a plugin with the `confluent-hub` CLI.
+2. Modify the [Dockerfile](Dockerfile) and install a plugin with the `confluent-hub` CLI.
 
 ```
 FROM confluentinc/cp-kafka-connect-base:6.0.0
@@ -129,8 +129,6 @@ FROM confluentinc/cp-kafka-connect-base:6.0.0
 
 COPY target/*.jat /usr/share/java
 ```
-
-
 
 ## References
 
