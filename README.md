@@ -11,13 +11,7 @@ versions:
 
 ## Getting Started
 ### Build and Startup the Environment
-To use the custom sink and source connectors we have to build them first with Maven.
-
-```
-mvn clean package
-```
-
-Now we can build and start the Docker containers. 
+To use the custom sink and source connectors we have to build and start the Docker containers. 
 
 ```
 docker-compose up --build
