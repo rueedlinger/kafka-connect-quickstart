@@ -7,8 +7,13 @@ This quickstart example uses the following versions to startup Docker containers
 
 ## Getting Started
 ### Build and Startup the Environment
-First build and start all Docker containers. 
+To use the custom sink and source connectors we have to build them first with Maven.
 
+```
+mvn clean package
+```
+
+Now we can build and start all Docker containers. 
 ```
 docker-compose up --build
 ```
@@ -24,8 +29,9 @@ his will start the following Docker containers:
 
 When all containers are started you can access different services like 
 - **Kafka Connect Rest API** => http://localhost:8083/
-- **Schema Registry** => http://localhost:8081/
 - **Kafdrop** => http://localhost:8082/
+- **Schema Registry** => http://localhost:8081/
+- **kafka-connect-ui** from Lenses.io  => http://localhost:8000/
 
 
 By default Apache Avro is used as convertor when nothing else is set for value or key convertor in the connector settings. 
@@ -58,42 +64,28 @@ When Kafka Connect is up and running you should see a response like this.
 ```
 
 
-In the [connectors](connectors) directory we have tow configuration files for a JSON and Avro source connector which uses the [Kafka Connect Datagen](https://github.com/confluentinc/kafka-connect-datagen) connectors to create some mock data for testing. 
+In the [config](config) directory are the configuration files for Avro source and sink connector. 
+- LogSinkConnector
+- RandomSourceConnector
 
-The following example shows the `source-users-json` connector JSON configuration file which can be deployed with the Kafka Connect REST API.
+
+This will install the source connector `random-source` [(users_source.json)](config/users_source.json) which publishes random data in the 
+Kafka topic `random-data`.
 
 ```
-{
-    "name": "source-users-json",
-    "config": {
-      "connector.class": "io.confluent.kafka.connect.datagen.DatagenConnector",
-      "kafka.topic": "users-json",
-      "quickstart": "users",
-      "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-      "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-      "value.converter.schemas.enable": "false",
-      "max.interval": 1000,
-      "iterations": 10000000,
-      "tasks.max": "1"
-    }
-  }
+curl -X POST http://localhost:8083/connectors  \
+    -H "Content-Type: application/json" \
+    --data @config/random-source.json
 ```
 
 
-This will install the source connector `source-users-json` [(users_json.json)](connectors/users_json.json) which publishes JSON data in the Kafka topic `users-json`.
+With the following command we install the LogSink connector `log-sink` [(users_avro.json)](connectors/users_avro.json) which will log the data from 
+the Kafka topic `random-data` to the console.
 
 ```
-curl -X POST http://localhost:8083/connectors 
-    -H "Content-Type: application/json" 
-    --data @connectors/users_json.json
-```
-
-With the following command we install the Avro source connector `source-users-avro` [(users_avro.json)](connectors/users_avro.json) which will publish Avro data in the Kafka topic `users-avro`.
-
-```
-curl -X POST http://localhost:8083/connectors  
-    -H "Content-Type: application/json" 
-    --data @connectors/users_json.json
+curl -X POST http://localhost:8083/connectors \
+    -H "Content-Type: application/json" \
+    --data @config/log-sink.json
 ```
 
 
@@ -130,6 +122,15 @@ FROM confluentinc/cp-kafka-connect-base:6.0.0
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.4.0
 ```
 > 
+
+3. Build a connector plugin with Maven and add it to Kafka Connect plugin path.
+```
+FROM confluentinc/cp-kafka-connect-base:6.0.0
+
+COPY target/*.jat /usr/share/java
+```
+
+
 
 ## References
 

@@ -1,0 +1,12 @@
+{
+  "name": "log-sink",
+  "config": {
+    "connector.class": "ch.yax.connect.quickstart.sink.LogSinkConnector",
+    "kafka.topic": "random-data",
+    "log.content": "value",
+    "log.level": "info",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "tasks.max": "1",
+    "topics": "random-data"
+  }
+}

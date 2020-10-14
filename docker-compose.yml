@@ -3,7 +3,7 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:6.0.0
     hostname: zookeeper
-    container_name: zookeeper
+    container_name: quickstart-zookeeper
     ports:
       - "2181:2181"
     environment:
@@ -13,7 +13,7 @@ services:
   broker:
     image: confluentinc/cp-kafka:6.0.0
     hostname: broker
-    container_name: broker
+    container_name: quickstart-broker
     depends_on:
       - zookeeper
     ports:
@@ -32,7 +32,7 @@ services:
   schema-registry:
     image: confluentinc/cp-schema-registry:6.0.0
     hostname: schema-registry
-    container_name: schema-registry
+    container_name: quickstart-schema-registry
     depends_on:
       - zookeeper
       - broker
@@ -42,11 +42,36 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
 
+  kafdrop:
+    image: obsidiandynamics/kafdrop:3.27.0
+    hostname: kafdrop
+    container_name: quickstart-schema-kafdrop
+    ports:
+      - "8082:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "broker:29092"
+      SCHEMAREGISTRY_CONNECT: "http://schema-registry:8081"
+    depends_on:
+      - zookeeper
+      - broker
+      - schema-registry
+
+  connect-ui:
+    image: landoop/kafka-connect-ui:0.9.7
+    hostname: connect-ui
+    container_name: quickstart-connect-ui
+    ports:
+      - "8000:8000"
+    environment:
+      CONNECT_URL: "connect:8083"
+    depends_on:
+      - connect
+
   connect:
     image: custom-connect:latest
     build: .
     hostname: connect
-    container_name: connect
+    container_name: quickstart-connect
     depends_on:
       - zookeeper
       - broker
@@ -66,7 +91,7 @@ services:
       CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
       CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL:  http://schema-registry:8081
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
@@ -81,18 +106,3 @@ services:
 
     volumes:
       - ./mount:/etc/kafka-connect/jars
-
-  kafdrop:
-    image: obsidiandynamics/kafdrop:3.27.0
-    hostname: kafdrop
-    container_name: kafdrop
-    ports:
-      - "8082:9000"
-    environment:
-      KAFKA_BROKERCONNECT: "broker:29092"
-      SCHEMAREGISTRY_CONNECT: "http://schema-registry:8081"
-    depends_on:
-      - zookeeper
-      - broker
-      - schema-registry
-

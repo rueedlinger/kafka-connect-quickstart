@@ -1,0 +1,10 @@
+{
+  "name": "random-source",
+  "config": {
+    "connector.class": "ch.yax.connect.quickstart.source.RandomSourceConnector",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "tasks.max": "1",
+    "topic": "random-data",
+    "max.interval.ms": "500"
+  }
+}
