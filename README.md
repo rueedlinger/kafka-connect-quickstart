@@ -1,10 +1,18 @@
 # Kafka Connect Quickstart
 This is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect) 
-and to deploy a Kafka Connect source and sink connector from a Maven project. This quickstart example uses the following 
+and to deploy a Kafka Connect source and sink connector from a Java Maven project. This quickstart example uses the following 
 versions:
 - Confluent Platform 6.0.0 
 - Kafka 2.6
 - Java 11
+
+The following components are part of the quickstart project:
+- The *Docker* image ([Dockerfile](Dockerfile)) will be used to run a Kafka Connect container 
+with all the required Kafka Connect plugins.
+- The Java project with source code ([src](src)) examples for a custom source and sink connector.
+- With *Docker Compose* ([docker-compose.yml](docker-compose.yml)) the whole infrastructure 
+(Kafka broker, zookeeper, etc) can be easily run to play around with the custom Kafka Connect image
+and the source and sink connectors from the Java project.
 
 ## CI Build
 - Builds the Java code and Docker image. ![Build Java & Docker](https://github.com/rueedlinger/kafka-connect-quickstart/workflows/Build%20Java%20&%20Docker/badge.svg)
