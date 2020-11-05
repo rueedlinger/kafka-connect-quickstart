@@ -49,7 +49,7 @@ public class EnvironmentConfigProvider implements ConfigProvider {
 
     @Override
     public void configure(final Map<String, ?> configs) {
-        log.debug("configure with config {}", configs);
+        log.debug("configure with configs {}", configs);
         blackliste = getBlacklistFromConfig(configs);
     }
 

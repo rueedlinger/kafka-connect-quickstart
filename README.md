@@ -135,6 +135,39 @@ FROM confluentinc/cp-kafka-connect-base:6.0.0
 COPY target/*.jat /usr/share/java
 ```
 
+## Examples
+### Config Provider
+
+#### EnvironmentConfigProvider
+The [`EnvironmentConfigProvider`](src/main/java/ch/yax/connect/quickstart/config/provider/EnvironmentConfigProvider.java) can be used to access Environment variables from the connector config.
+
+The config provider `EnvironmentConfigProvider` supports the following config parameters:
+- `BLACKLIST` a list of env variables which should be filtered out. When set to `"foo,bar"` 
+
+
+```bash
+CONNECT_CONFIG_PROVIDERS: "env"
+CONNECT_CONFIG_PROVIDERS_ENV_CLASS: "ch.yax.connect.quickstart.config.provider.EnvironmentConfigProvider"
+CONNECT_CONFIG_PROVIDERS_ENV_PARAM_BLACKLIST: "foo,bar"
+```
+
+With the pattern `${<CONFIG_RROVIDER>:<PATH>:<KEY>}` you can access the config values from your
+connector. For example when you have the env variable `my-value`, you can reference the value in your connector 
+config with `${env:my-value}`. Note the `path` is ignored by `EnvironmentConfigProvider` and has no effect. 
+
+```bash
+connector.class=ch.yax.connect.source.random.RandomSourceConnector
+test=${env:my-value}
+tasks.max=1
+topic=foo
+```
+
+
+
+
+
+
+
 ## References
 
 - [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect)
