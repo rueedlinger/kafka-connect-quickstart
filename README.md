@@ -136,6 +136,24 @@ COPY target/*.jat /usr/share/java
 ```
 
 ## Examples
+
+### Source Connector
+tbd
+
+### Sink Connector
+tbd
+
+### Single Message Transforms (SMT)
+Single Message Transformations (SMT) are applied to messages as they go through Connect.
+
+tbd
+
+### Predicates
+Transformations can be configured with predicates so that the transformation is applied only to records which satisfy a condition.
+
+tbd
+
+
 ### Config Provider
 
 #### EnvironmentConfigProvider
