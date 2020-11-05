@@ -143,8 +143,8 @@ tbd
 ### Sink Connector
 tbd
 
-### Single Message Transforms (SMT)
-Single Message Transformations (SMT) are applied to messages as they go through Connect.
+### Single Message Transforms (SMTs)
+Single Message Transformations (SMTs) are applied to messages as they go through Connect.
 
 tbd
 
