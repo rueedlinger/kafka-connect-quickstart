@@ -68,7 +68,6 @@ services:
       - connect
 
   connect:
-    image: custom-connect:latest
     build: .
     hostname: connect
     container_name: quickstart-connect
@@ -106,7 +105,6 @@ services:
       CONNECT_CONFIG_PROVIDERS: "env"
       CONNECT_CONFIG_PROVIDERS_ENV_CLASS: "ch.yax.connect.quickstart.config.provider.EnvironmentConfigProvider"
       CONNECT_CONFIG_PROVIDERS_ENV_PARAM_BLACKLIST: "foo,bar"
-      CONNECT_CONFIG_PROVIDERS_ENV_PARAM_TTL_MS: "300000"
 
     volumes:
       - ./mount:/etc/kafka-connect/jars

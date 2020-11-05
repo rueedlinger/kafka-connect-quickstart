@@ -159,6 +159,9 @@ tbd
 #### EnvironmentConfigProvider
 The [`EnvironmentConfigProvider`](src/main/java/ch/yax/connect/quickstart/config/provider/EnvironmentConfigProvider.java) can be used to access Environment variables from the connector config.
 
+> **Note:** to register a Kafka Connect Config Provider you need to add the file [`org.apache.kafka.common.config.provider.ConfigProvider`](src/main/resources/META-INF/services)
+in `META-INF/services` which contains the full class name of your config provider. 
+
 The config provider `EnvironmentConfigProvider` supports the following config parameters:
 - `BLACKLIST` a list of env variables which should be filtered out. When set to `"foo,bar"` 
 
@@ -170,11 +173,11 @@ CONNECT_CONFIG_PROVIDERS_ENV_PARAM_BLACKLIST: "foo,bar"
 ```
 
 With the pattern `${<CONFIG_RROVIDER>:<PATH>:<KEY>}` you can access the config values from your
-connector. For example when you have the env variable `my-value`, you can reference the value in your connector 
 config with `${env:my-value}`. Note the `path` is ignored by `EnvironmentConfigProvider` and has no effect. 
 
 ```bash
-connector.class=ch.yax.connect.source.random.RandomSourceConnector
+c
+connector. For example when you have the env variable `my-value`, you can reference the value in your connector onnector.class=ch.yax.connect.source.random.RandomSourceConnector
 test=${env:my-value}
 tasks.max=1
 topic=foo

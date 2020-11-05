@@ -2,7 +2,7 @@
 FROM maven:3.6.3-openjdk-11 as build-stage
 COPY . /app
 WORKDIR /app
-RUN mvn -B package --file pom.xml
+RUN mvn -B clean package --file pom.xml
 
 # Custom Kafka Connect image
 FROM confluentinc/cp-kafka-connect-base:6.0.0
