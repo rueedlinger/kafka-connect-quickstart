@@ -173,12 +173,14 @@ CONNECT_CONFIG_PROVIDERS_ENV_PARAM_BLACKLIST: "foo,bar"
 ```
 
 With the pattern `${<CONFIG_RROVIDER>:<PATH>:<KEY>}` you can access the config values from your
-config with `${env:my-value}`. Note the `path` is ignored by `EnvironmentConfigProvider` and has no effect. 
+config with `${env:my-path:my-value}`. Note the `path` is ignored by `EnvironmentConfigProvider` and has no effect. 
 
-```bash
-c
-connector. For example when you have the env variable `my-value`, you can reference the value in your connector onnector.class=ch.yax.connect.source.random.RandomSourceConnector
-test=${env:my-value}
+You could use the env `MAX_INTERVAL_MS` to set the configuration property `max.interval.ms` in the `RandomSourceConnector`
+configuration.
+
+```properties
+connector.class=ch.yax.connect.source.random.RandomSourceConnector
+max.interval.ms=${env:MAX_INTERVAL_MS}
 tasks.max=1
 topic=foo
 ```
