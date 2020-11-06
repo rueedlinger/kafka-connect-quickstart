@@ -128,11 +128,11 @@ RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.4.0
 ```
 > 
 
-3. Build a connector plugin with Maven and add it to Kafka Connect plugin path.
+3. Build a connector plugin fat jar with Maven and add it to Kafka Connect plugin path.
 ```
 FROM confluentinc/cp-kafka-connect-base:6.0.0
 
-COPY target/*.jat /usr/share/java
+COPY target/connect-quickstart-*.jar /usr/share/java
 ```
 
 ## Examples
