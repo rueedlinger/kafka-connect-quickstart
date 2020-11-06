@@ -137,12 +137,12 @@ COPY target/connect-quickstart-*.jar /usr/share/java
 
 ## Examples
 Here are some examples of Kafka Connect Plugins which can be used to build your own plugins:
-- *Sink Connector* - loading data from kafka and store it into an external system (eg. database).
-- *Source Connector* - loading data from an external system and store it into kafka.
-- *Single Message Transforms (SMTs)* - transforms a message when processing with a connector.
-- *Predicates* - Transforms cn be configured with a predicate so that transforms only applies when the 
+- **Sink Connector** - loading data from kafka and store it into an external system (eg. database).
+- **Source Connector** - loading data from an external system and store it into kafka.
+- **Single Message Transforms (SMTs)** - transforms a message when processing with a connector.
+- **Predicates* - Transforms cn be configured with a predicate so that transforms only applies when the 
 condition was satisfied.
-- *Config Providers* - loads configurations for the connector from external resources.
+- **Config Providers** - loads configurations for the connector from external resources.
 
 ### Source Connector
 tbd
