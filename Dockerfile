@@ -23,4 +23,4 @@ RUN confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:lates
 
 # add the Maven build target to the Kafka Connect plugin path.
 RUN mkdir /usr/share/java/quickstart
-COPY --from=build-stage /app/target/*.jar /usr/share/java/quickstart
+COPY --from=build-stage /app/target/connect-quickstart-*.jar /usr/share/java/quickstart

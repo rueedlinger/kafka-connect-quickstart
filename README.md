@@ -141,7 +141,12 @@ COPY target/*.jat /usr/share/java
 tbd
 
 ### Sink Connector
-tbd
+#### LogSinkConnector
+The `LogSinkConnector` will log the output of a message. The following configuration options exists.
+- `log.level: [INFO, 'DEBUG', 'WARN', 'ERROR', 'TRACE']`. The log level which should be used. Default is `INFO`.
+- `log.content: [ALL, 'KEY', 'VALUE']`. Which part of the message should be logged the key, the value or both. Default is `ALL`.
+- `log.prefix`. The prefix of the log message. Default is none. 
+
 
 ### Single Message Transforms (SMTs)
 Single Message Transformations (SMTs) are applied to messages as they go through Connect.
