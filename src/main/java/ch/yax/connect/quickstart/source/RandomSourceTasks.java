@@ -1,6 +1,7 @@
 package ch.yax.connect.quickstart.source;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.config.ConfigException;
 import org.apache.kafka.common.utils.SystemTime;
 import org.apache.kafka.common.utils.Time;
 import org.apache.kafka.connect.data.Schema;
@@ -12,7 +13,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static ch.yax.connect.quickstart.common.ConnectMetadataUtil.getVersion;
-import static ch.yax.connect.quickstart.source.RandomConfig.TASK_ID;
+import static ch.yax.connect.quickstart.source.RandomSourceConfig.TASK_ID;
 
 @Slf4j
 public class RandomSourceTasks extends SourceTask {
@@ -23,7 +24,7 @@ public class RandomSourceTasks extends SourceTask {
     private final AtomicBoolean running = new AtomicBoolean(false);
     private final Time time;
     private long lastProcessedOffset;
-    private RandomConfig config;
+    private RandomSourceConfig config;
     private long lastPollMs;
     private String taskId;
 
@@ -42,7 +43,7 @@ public class RandomSourceTasks extends SourceTask {
     public void start(final Map<String, String> properties) {
         log.info("Starting Random source task with config: {}", properties);
 
-        config = new RandomConfig(properties);
+        config = new RandomSourceConfig(properties);
         taskId = properties.get(TASK_ID);
         running.set(true);
 
@@ -55,14 +56,13 @@ public class RandomSourceTasks extends SourceTask {
             if (currentOffset != null) {
                 lastProcessedOffset = currentOffset;
             } else {
+                // first time
                 lastProcessedOffset = 0L;
             }
         } else {
-            // first time
-            lastProcessedOffset = 0L;
+            throw new ConfigException("offset reader was not set");
         }
         log.info("Started Random source task lastProcessedOffset: {}", lastProcessedOffset);
-
 
     }
 
@@ -72,9 +72,16 @@ public class RandomSourceTasks extends SourceTask {
 
         final long timeSinceLastPollMs = time.milliseconds() - lastPollMs;
 
-        if (timeSinceLastPollMs < config.getMaxInterval()) {
+
+        if (timeSinceLastPollMs < config.getPollInterval()) {
             log.debug("Sleep, time since last poll = {}", timeSinceLastPollMs);
             time.sleep(DEFAULT_WAIT_MS);
+            return null;
+        }
+
+        if (!running.get()) {
+            // stopped
+            log.debug("task was stopped");
             return null;
         }
 
@@ -106,6 +113,5 @@ public class RandomSourceTasks extends SourceTask {
     public void stop() {
         log.info("Stopping Random source task");
         running.set(false);
-        lastPollMs = time.milliseconds();
     }
 }

@@ -107,7 +107,7 @@ services:
       CONNECT_CONFIG_PROVIDERS_ENV_PARAM_BLACKLIST: "foo,bar"
 
       # ENVs for connector configuration
-      CONFIG_MAX_INTERVAL_MS: 2000
+      CONFIG_POLL_INTERVAL_MS: 5000
 
     volumes:
       - ./mount:/etc/kafka-connect/jars

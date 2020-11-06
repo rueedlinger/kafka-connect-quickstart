@@ -180,12 +180,12 @@ CONNECT_CONFIG_PROVIDERS_ENV_PARAM_BLACKLIST: "foo,bar"
 With the pattern `${<CONFIG_RROVIDER>:<PATH>:<KEY>}` you can access the config values from your
 config with `${env:my-path:my-value}`. Note the `path` is ignored by `EnvironmentConfigProvider` and has no effect. 
 
-You could use the env `CONFIG_MAX_INTERVAL_MS` to set the configuration property `max.interval.ms` in the `RandomSourceConnector`
+You could use the env `CONFIG_POLL_INTERVAL_MS` to set the configuration property `poll.interval.ms` in the `RandomSourceConnector`
 configuration.
 
 ```properties
 connector.class=ch.yax.connect.quickstart.source.RandomSourceConnector
-max.interval.ms=${env:CONFIG_MAX_INTERVAL_MS}
+max.interval.ms=${env:CONFIG_POLL_INTERVAL_MS}
 tasks.max=1
 topic=foo
 ```

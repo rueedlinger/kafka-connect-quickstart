@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import static ch.yax.connect.quickstart.common.ConnectMetadataUtil.getVersion;
-import static ch.yax.connect.quickstart.source.RandomConfig.TASK_ID;
-import static ch.yax.connect.quickstart.source.RandomConfig.TASK_MAX;
+import static ch.yax.connect.quickstart.source.RandomSourceConfig.TASK_ID;
+import static ch.yax.connect.quickstart.source.RandomSourceConfig.TASK_MAX;
 
 
 @Slf4j
@@ -52,7 +52,7 @@ public class RandomSourceConnector extends SourceConnector {
 
     @Override
     public ConfigDef config() {
-        return RandomConfig.CONFIG_DEF;
+        return RandomSourceConfig.CONFIG_DEF;
     }
 
     @Override
