@@ -145,7 +145,7 @@ condition was satisfied.
 - **Config Providers** - loads configurations for the connector from external resources.
 
 ### Source Connector
-The `RandomSourceConnector` will create random data. The output data could look like this:
+The [`RandomSourceConnector`](src/main/java/ch/yax/connect/quickstart/source) will create random data. The output data could look like this:
 
 ```json
 {"value":  5860906703091898043, "count":  34, "message":  "Task Id: 0", "timestamp": "2020-11-06T18:28:31.314616Z"}
@@ -156,7 +156,7 @@ The following configuration options are possible.
 
 ### Sink Connector
 #### LogSinkConnector
-The `LogSinkConnector` will log the output of a message. The following configuration options exists.
+The [`LogSinkConnector`](src/main/java/ch/yax/connect/quickstart/sink) will log the output of a message. The following configuration options exists.
 - `log.level: [INFO, 'DEBUG', 'WARN', 'ERROR', 'TRACE']`. The log level which should be used. Default is `INFO`.
 - `log.content: [ALL, 'KEY', 'VALUE', 'KEY_AVLUE']`. Which part of the message should be logged the key, the value, key & value or the 
 whole record (ALL). Default is `ALL`.
