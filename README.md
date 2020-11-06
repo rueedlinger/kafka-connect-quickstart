@@ -145,7 +145,14 @@ condition was satisfied.
 - **Config Providers** - loads configurations for the connector from external resources.
 
 ### Source Connector
-tbd
+The `RandomSourceConnector` will create random data. The output data could look like this:
+
+```json
+{"value":  5860906703091898043, "count":  34, "message":  "Task Id: 0", "timestamp": "2020-11-06T18:28:31.314616Z"}
+```
+The following configuration options are possible.
+- `topic` - the kafka topic where the data will be published.
+- `poll.interval.ms` - the interval in milliseconds the polling of data should happen. The default is 1000 milliseconds. 
 
 ### Sink Connector
 #### LogSinkConnector
