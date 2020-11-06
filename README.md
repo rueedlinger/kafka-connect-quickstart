@@ -184,7 +184,7 @@ You could use the env `CONFIG_MAX_INTERVAL_MS` to set the configuration property
 configuration.
 
 ```properties
-connector.class=ch.yax.connect.source.random.RandomSourceConnector
+connector.class=ch.yax.connect.quickstart.source.RandomSourceConnector
 max.interval.ms=${env:CONFIG_MAX_INTERVAL_MS}
 tasks.max=1
 topic=foo
