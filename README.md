@@ -1,21 +1,21 @@
 # Kafka Connect Quickstart
-This is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect) 
-and to deploy a Kafka Connect source and sink connector from a Java Maven project. This quickstart example uses the following 
-versions:
+This is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect).
+There are examples to develop and deploy Kafka Connect plugins (connectors, transforms, etc.) from a Java Maven project. 
+This quickstart example uses the following versions:
 - Confluent Platform 6.0.0 
 - Kafka 2.6
 - Java 11
 
 The following components are part of the quickstart project:
 - The *Docker* image ([Dockerfile](Dockerfile)) will be used to run a Kafka Connect container 
-with all the required Kafka Connect plugins.
-- The Java project with source code ([src](src)) examples for a custom source and sink connector.
-- With *Docker Compose* ([docker-compose.yml](docker-compose.yml)) the whole infrastructure 
-(Kafka broker, zookeeper, etc) can be easily run to play around with the custom Kafka Connect image
-and the source and sink connectors from the Java project.
+with all the Kafka Connect plugin examples and some plugins from conlfuent-hub. 
+- The Java project with the source code ([src](src)) of the Kafka Connect plugin 
+(connectors, transforms, etc.) examples.
+- The *Docker Compose* ([docker-compose.yml](docker-compose.yml)) for setting up adn running 
+the whole infrastructure (Kafka broker, zookeeper, etc). 
 
 ## CI Build
-- Builds the Java code and Docker image. ![Build Java & Docker](https://github.com/rueedlinger/kafka-connect-quickstart/workflows/Build%20Java%20&%20Docker/badge.svg)
+- Builds the Java code and Docker image. ![Build Java & Docker](https://github.com/rueedlinger/kafka-connect-quickstart/workflows/Build%20Java%20&%20Docker/badge.svg) 
 
 ## Getting Started
 ### Build and Startup the Environment
@@ -135,7 +135,7 @@ FROM confluentinc/cp-kafka-connect-base:6.0.0
 COPY target/connect-quickstart-*.jar /usr/share/java
 ```
 
-## Examples
+## Example Plugins (Java)
 Here are some examples of Kafka Connect Plugins which can be used to build your own plugins:
 - **Sink Connector** - loading data from kafka and store it into an external system (eg. database).
 - **Source Connector** - loading data from an external system and store it into kafka.
@@ -165,7 +165,28 @@ whole record (ALL). Default is `ALL`.
 ### Single Message Transforms (SMTs)
 Single Message Transformations (SMTs) are applied to messages as they go through Connect.
 
-tbd
+#### UUIDField
+The [`UUIDField`](src/main/java/ch/yax/connect/quickstart/transform) transforms adds a UUID field to the 
+record. This transform can be used to add a UUID as key or value to the Kafka message.
+
+```properties
+"transforms": "UUIDField",
+"transforms.UUIDField.type": "ch.yax.connect.quickstart.transform.UUIDField$Value",
+"transforms.UUIDField.field": "my-uuid"
+```
+
+Before the transformation the message might look like this.
+
+```json
+{"value":  5860906703091898043, "count":  34}
+```
+
+After the transform the message contains the new field `my-uuid` with a generated uuid as value.
+
+```json
+{"value":  5860906703091898043, "count":  34, "my-uuid": "de32f3bf-b65a-41ab-a9c3-db4956a4e7db"}
+```
+
 
 ### Predicates
 Transformations can be configured with predicates so that the transformation is applied only to records which satisfy a condition.

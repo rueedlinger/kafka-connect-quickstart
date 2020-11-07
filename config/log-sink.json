@@ -7,6 +7,9 @@
     "log.level": "info",
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "tasks.max": "1",
-    "topics": "random-data"
+    "topics": "random-data",
+    "transforms": "UUIDField",
+    "transforms.UUIDField.type": "ch.yax.connect.quickstart.transform.UUIDField$Value",
+    "transforms.UUIDField.field": "my-uuid"
   }
 }
