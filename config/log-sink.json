@@ -9,7 +9,7 @@
     "tasks.max": "1",
     "topics": "random-data",
     "transforms": "UUIDField",
-    "transforms.UUIDField.type": "ch.yax.connect.quickstart.transform.UUIDField$Value",
+    "transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
     "transforms.UUIDField.field": "my-uuid"
   }
 }

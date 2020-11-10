@@ -1,4 +1,4 @@
-package ch.yax.connect.quickstart.transform;
+package ch.yax.connect.quickstart.transforms;
 
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.SchemaBuilder;

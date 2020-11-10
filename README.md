@@ -166,12 +166,12 @@ whole record (ALL). Default is `ALL`.
 Single Message Transformations (SMTs) are applied to messages as they go through Connect.
 
 #### UUIDField
-The [`UUIDField`](src/main/java/ch/yax/connect/quickstart/transform) transforms adds a UUID field to the 
+The [`UUIDField`](src/main/java/ch/yax/connect/quickstart/transforms) transforms adds a UUID field to the 
 record. This transform can be used to add a UUID as key or value to the Kafka message.
 
 ```properties
 "transforms": "UUIDField",
-"transforms.UUIDField.type": "ch.yax.connect.quickstart.transform.UUIDField$Value",
+"transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
 "transforms.UUIDField.field": "my-uuid"
 ```
 

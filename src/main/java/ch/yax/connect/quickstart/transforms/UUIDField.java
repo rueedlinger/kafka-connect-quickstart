@@ -1,4 +1,4 @@
-package ch.yax.connect.quickstart.transform;
+package ch.yax.connect.quickstart.transforms;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.config.ConfigDef;

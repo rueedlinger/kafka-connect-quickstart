@@ -39,3 +39,4 @@ dependency-reduced-pom.xml
 *.iml
 *.ipr
 out/
+.gradle/
