@@ -102,12 +102,18 @@ services:
       CONNECT_CONNECTOR_CLIENT_CONFIG_OVERRIDE_POLICY: "All"
       CONNECT_ACCESS_CONTROL_ALLOW_ORIGIN: "*"
       CONNECT_ACCESS_CONTROL_ALLOW_METHODS: "GET,OPTIONS,HEAD,POST,PUT,DELETE"
+
+      # Config Providers
       CONNECT_CONFIG_PROVIDERS: "env"
       CONNECT_CONFIG_PROVIDERS_ENV_CLASS: "ch.yax.connect.quickstart.config.provider.EnvironmentConfigProvider"
       CONNECT_CONFIG_PROVIDERS_ENV_PARAM_BLACKLIST: "foo,bar"
 
+      # REST extensions
+      CONNECT_REST_EXTENSION_CLASSES: "ch.yax.connect.quickstart.rest.HealthExtension"
+
       # ENVs for connector configuration
       CONFIG_POLL_INTERVAL_MS: 5000
+
 
     volumes:
       - ./mount:/etc/kafka-connect/jars
