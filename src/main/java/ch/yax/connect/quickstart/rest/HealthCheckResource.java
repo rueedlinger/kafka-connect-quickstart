@@ -17,10 +17,6 @@ import java.util.Map;
 @Slf4j
 public class HealthCheckResource {
 
-    private static final String FIELD_NAME_STATUS = "status";
-    private static final String FIELD_NAME_TASKS = "tasks";
-    private static final String STATE_RUNNING = "RUNNING";
-
     private final Map<String, ?> configs;
     private final ConnectClusterState clusterState;
 
