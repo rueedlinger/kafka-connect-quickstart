@@ -108,6 +108,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- for testing the rest extensions -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>2.22.2</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 

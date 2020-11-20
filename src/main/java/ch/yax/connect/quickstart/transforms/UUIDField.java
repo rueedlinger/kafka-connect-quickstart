@@ -21,7 +21,7 @@ import static org.apache.kafka.connect.transforms.util.Requirements.requireStruc
 @Slf4j
 public abstract class UUIDField<R extends ConnectRecord<R>> implements Transformation<R> {
 
-    public static final String FIELD_DEFAULT_NAME = "uuid";
+    private static final String FIELD_DEFAULT_NAME = "uuid";
     private static final String FIELD_CONFIG = "field";
     private static final String PURPOSE = "insert UUID field";
 

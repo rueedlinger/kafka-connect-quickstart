@@ -38,8 +38,9 @@ public abstract class EqualsField<R extends ConnectRecord<R>> implements Predica
     private final String PURPOSE = "equals predicate";
 
     private String fieldName;
-    private String expectedValue;
-    private boolean ignoreCase;
+
+    private StringTestEquals testEquals;
+
 
     @Override
     public ConfigDef config() {
@@ -53,13 +54,13 @@ public abstract class EqualsField<R extends ConnectRecord<R>> implements Predica
         log.debug("test equals predicate on record {} with schema {}", record, schema);
 
         if (schema == null) {
-            // with schema
-            final Struct value = requireStruct(operatingValue(record), PURPOSE);
-            return testEquals(value.get(fieldName));
-        } else {
             // no schema
             final Map<String, Object> value = requireMap(operatingValue(record), PURPOSE);
-            return testEquals(value.get(fieldName));
+            return testEquals.test(value.get(fieldName));
+        } else {
+            // with schema
+            final Struct value = requireStruct(operatingValue(record), PURPOSE);
+            return testEquals.test(value.get(fieldName));
         }
     }
 
@@ -73,21 +74,11 @@ public abstract class EqualsField<R extends ConnectRecord<R>> implements Predica
         final SimpleConfig config = new SimpleConfig(CONFIG_DEF, props);
         log.debug("configure transform with properties {}", props);
         fieldName = config.getString(FIELD_CONFIG);
-        expectedValue = config.getString(VALUE_CONFIG);
-        ignoreCase = config.getBoolean(IGNORE_CASE);
+        final String expectedValue = config.getString(VALUE_CONFIG);
+        final boolean ignoreCase = config.getBoolean(IGNORE_CASE);
+        testEquals = new StringTestEquals(expectedValue, ignoreCase);
     }
 
-    private boolean testEquals(final Object value) {
-        if (value == null) {
-            return false;
-        }
-
-        if (ignoreCase) {
-            return String.valueOf(value).equalsIgnoreCase(expectedValue);
-        } else {
-            return String.valueOf(value).equals(expectedValue);
-        }
-    }
 
     protected abstract Schema operatingSchema(R record);
 
@@ -105,16 +96,18 @@ public abstract class EqualsField<R extends ConnectRecord<R>> implements Predica
             return record.key();
         }
 
-        public static class Value<R extends ConnectRecord<R>> extends EqualsField<R> {
-            @Override
-            protected Schema operatingSchema(final R record) {
-                return record.valueSchema();
-            }
+    }
 
-            @Override
-            protected Object operatingValue(final R record) {
-                return record.value();
-            }
+    public static class Value<R extends ConnectRecord<R>> extends EqualsField<R> {
+        @Override
+        protected Schema operatingSchema(final R record) {
+            return record.valueSchema();
+        }
+
+        @Override
+        protected Object operatingValue(final R record) {
+            return record.value();
         }
     }
+
 }
