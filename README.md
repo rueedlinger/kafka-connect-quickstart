@@ -279,10 +279,9 @@ CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.Log
 
 #### HealthExtension
 
-> **Note:** to register a Kafka Connect Rest Extension you need to add the file [`org.apache.kafka.connect.rest.ConnectRestExtension`](src/main/resources/META-INF/services)
-in `META-INF/services` which contains the full class name of your rest extension. 
+The [`HealthExtension`](src/main/java/ch/yax/connect/quickstart/rest) is Rest extension which provides a health API (http://localhost:8083/health) 
+to Kafka Connect.
 
-The [`HealthExtension`](src/main/java/ch/yax/connect/quickstart/rest) is Rest extension which provides a health API (http://localhost:8083/health) to Kafka Connect.
 The response from the health API (`/health`) might look something like this:
 
 ```json
@@ -326,6 +325,10 @@ The response from the health API (`/health`) might look something like this:
    ]
 }
 ```
+
+> **Note:** to register a Kafka Connect Rest Extension you need to add the file [`org.apache.kafka.connect.rest.ConnectRestExtension`](src/main/resources/META-INF/services)
+in `META-INF/services` which contains the full class name of your rest extension. 
+
 
 To enable the Connect Rest Extensions add the following configuration:
 
