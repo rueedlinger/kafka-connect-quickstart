@@ -196,10 +196,12 @@ After the transform the message contains the new field `my-uuid` with a generate
 #### 
 Transformations can be configured with predicates so that the transformation is applied only to records which satisfy a condition.
 The [`EqualsField`](src/main/java/ch/yax/connect/quickstart/predicates) Predicate will test a spefic vale of field and apply the 
-transformation only when the value is equal. 
+transformation only when the value is equal to value set by `expected.value`. 
 
-For example to enable the Predicate for the existing transform `UUIDField` you add the folloiwng configuration to 
-your connector.
+For example to enable the Predicate for the existing transform `UUIDField` you add the following configuration to 
+your connector. This will add the `UUIDField` transform only when the value in the `message` field ìs equals 
+to the expected value `task id: 0`. With `ignore.case=true` set to true lowercase and uppercase letters 
+are treated as equivalent. 
 
 ```properties
 transforms.UUIDField.predicate=EqualsField
