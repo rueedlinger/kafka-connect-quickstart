@@ -3,7 +3,7 @@
   "config": {
     "connector.class": "ch.yax.connect.quickstart.source.RandomSourceConnector",
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-    "tasks.max": "1",
+    "tasks.max": "2",
     "topic": "random-data",
     "poll.interval.ms": "${env:CONFIG_POLL_INTERVAL_MS}"
   }
