@@ -22,9 +22,8 @@ public class HealthResponse {
 
     public static HealthResponse from(final ConnectClusterState clusterState) {
         final List<ConnectorHealthResponse> connectorHealth = new LinkedList<>();
-        clusterState.connectors().forEach(connectorName -> {
-            connectorHealth.add(ConnectorHealthResponse.from(clusterState.connectorHealth(connectorName)));
-        });
+        clusterState.connectors().forEach(connectorName -> connectorHealth
+                .add(ConnectorHealthResponse.from(clusterState.connectorHealth(connectorName))));
 
         final AtomicBoolean allOk = new AtomicBoolean(true);
 
@@ -55,6 +54,7 @@ class ConnectorHealthResponse {
     private final HealthState status;
     private final String connectorName;
     private final String connectorState;
+    private final String connectorWorkerId;
     private final String connectorErrors;
     private final List<TaskHealthResponse> tasks;
 
@@ -69,9 +69,7 @@ class ConnectorHealthResponse {
         final List<TaskHealthResponse> taskHealthResponses = new LinkedList<>();
 
 
-        taskStates.forEach((k, v) -> {
-            taskHealthResponses.add(TaskHealthResponse.from(v));
-        });
+        taskStates.forEach((k, v) -> taskHealthResponses.add(TaskHealthResponse.from(v)));
 
         if (connectorState.state().equals("RUNNING")) {
             status = HealthState.UP;
@@ -83,6 +81,7 @@ class ConnectorHealthResponse {
                 .connectorName(name)
                 .connectorState(connectorState.state())
                 .connectorErrors(connectorState.traceMessage())
+                .connectorWorkerId(connectorState.workerId())
                 .tasks(taskHealthResponses)
                 .status(status).build();
     }
@@ -99,6 +98,7 @@ class TaskHealthResponse {
     private final int taskId;
     private final HealthState status;
     private final String taskState;
+    private final String tasksWorkerId;
     private final String taskErrors;
 
     public static TaskHealthResponse from(final TaskState taskState) {
@@ -113,7 +113,7 @@ class TaskHealthResponse {
                 .taskId(taskState.taskId())
                 .taskState(taskState.state())
                 .taskErrors(taskState.traceMessage())
+                .tasksWorkerId(taskState.workerId())
                 .status(status).build();
-
     }
 }
