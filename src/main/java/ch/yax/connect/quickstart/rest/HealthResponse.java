@@ -53,6 +53,7 @@ public class HealthResponse {
 class ConnectorHealthResponse {
     private final HealthState status;
     private final String connectorName;
+    private final String connectorType;
     private final String connectorState;
     private final String connectorWorkerId;
     private final String connectorErrors;
@@ -63,6 +64,7 @@ class ConnectorHealthResponse {
         final HealthState status;
 
         final String name = connectorHealth.name();
+        final String type = String.valueOf(connectorHealth.type());
         final ConnectorState connectorState = connectorHealth.connectorState();
         final Map<Integer, TaskState> taskStates = connectorHealth.tasksState();
 
@@ -79,6 +81,7 @@ class ConnectorHealthResponse {
 
         return ConnectorHealthResponse.builder()
                 .connectorName(name)
+                .connectorType(type)
                 .connectorState(connectorState.state())
                 .connectorErrors(connectorState.traceMessage())
                 .connectorWorkerId(connectorState.workerId())
