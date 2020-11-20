@@ -143,9 +143,9 @@ Here are some examples of Kafka Connect Plugins which can be used to build your 
 - **Predicates** - Transforms can be configured with a predicate so that transforms only applies when the 
 condition was satisfied ([KIP-585](https://cwiki.apache.org/confluence/display/KAFKA/KIP-585%3A+Filter+and+Conditional+SMTs)).
 - **Config Providers** - loads configurations for the connector from external resources.
-- **Kafka Consumer / Producer Interceptors** - The Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
+- **Kafka Consumer / Producer Interceptors** - the Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
 can be used to intercept Kafka messages. 
-- **Rest Extensions** - With the Connect Rest Extension Plugin ([KIP-285](https://cwiki.apache.org/confluence/display/KAFKA/KIP-285%3A+Connect+Rest+Extension+Plugin)) you can extend the existing Rest API.
+- **Rest Extensions** - with the Connect Rest Extension Plugin ([KIP-285](https://cwiki.apache.org/confluence/display/KAFKA/KIP-285%3A+Connect+Rest+Extension+Plugin)) you can extend the existing Rest API.
 
 ### Source Connector
 The [`RandomSourceConnector`](src/main/java/ch/yax/connect/quickstart/source) will create random data. The output data could look like this:
@@ -161,7 +161,7 @@ The following configuration options are possible.
 #### LogSinkConnector
 The [`LogSinkConnector`](src/main/java/ch/yax/connect/quickstart/sink) will log the output of a message. The following configuration options exists.
 - `log.level: [INFO, 'DEBUG', 'WARN', 'ERROR', 'TRACE']`. The log level which should be used. Default is `INFO`.
-- `log.content: [ALL, 'KEY', 'VALUE', 'KEY_AVLUE']`. Which part of the message should be logged the key, the value, key & value or the 
+- `log.content: [ALL, 'KEY', 'VALUE', 'KEY_VALUE']`. Which part of the message should be logged the key, the value, key & value or the 
 whole record (ALL). Default is `ALL`.
 - `log.format`. The format of the log message. Default is `{} {}`. 
 
