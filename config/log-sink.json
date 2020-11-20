@@ -10,6 +10,12 @@
     "topics": "random-data",
     "transforms": "UUIDField",
     "transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
-    "transforms.UUIDField.field": "my-uuid"
+    "transforms.UUIDField.field": "my-uuid",
+    "transforms.UUIDField.predicate": "EqualsField",
+    "predicates": "EqualsField",
+    "predicates.EqualsField.type": " ch.yax.connect.quickstart.predicates.EqualsField$Value",
+    "predicates.EqualsField.ignore.case": "true",
+    "predicates.EqualsField.expected.value": "task id: 0",
+    "predicates.EqualsField.field": "message"
   }
 }

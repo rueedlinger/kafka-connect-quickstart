@@ -92,7 +92,6 @@ class ConnectorHealthResponse {
 
 }
 
-
 @Builder
 @ToString
 @Getter

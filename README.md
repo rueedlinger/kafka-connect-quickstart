@@ -2,7 +2,7 @@
 This is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect).
 There are examples to develop and deploy Kafka Connect plugins (connectors, transforms, etc.) from a Java Maven project. 
 This quickstart example uses the following versions:
-- Confluent Platform 6.0.0 
+- Confluent Platform 6.0.0 (Docker images)
 - Kafka 2.6
 - Java 11
 
@@ -140,9 +140,12 @@ Here are some examples of Kafka Connect Plugins which can be used to build your 
 - **Sink Connector** - loading data from kafka and store it into an external system (eg. database).
 - **Source Connector** - loading data from an external system and store it into kafka.
 - **Single Message Transforms (SMTs)** - transforms a message when processing with a connector.
-- **Predicates** - Transforms cn be configured with a predicate so that transforms only applies when the 
-condition was satisfied.
+- **Predicates** - Transforms can be configured with a predicate so that transforms only applies when the 
+condition was satisfied ([KIP-585](https://cwiki.apache.org/confluence/display/KAFKA/KIP-585%3A+Filter+and+Conditional+SMTs)).
 - **Config Providers** - loads configurations for the connector from external resources.
+- **Kafka Consumer / Producer Interceptors** - The Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
+can be used to intercept Kafka messages. 
+- **Rest Extensions** - With the Connect Rest Extension Plugin ([KIP-285](https://cwiki.apache.org/confluence/display/KAFKA/KIP-285%3A+Connect+Rest+Extension+Plugin)) you can extend the existing Rest API.
 
 ### Source Connector
 The [`RandomSourceConnector`](src/main/java/ch/yax/connect/quickstart/source) will create random data. The output data could look like this:
@@ -189,10 +192,24 @@ After the transform the message contains the new field `my-uuid` with a generate
 
 
 ### Predicates
+
+#### 
 Transformations can be configured with predicates so that the transformation is applied only to records which satisfy a condition.
+The [`EqualsField`](src/main/java/ch/yax/connect/quickstart/predicates) Predicate will test a spefic vale of field and apply the 
+transformation only when the value is equal. 
 
-tbd
+For example to enable the Predicate for the existing transform `UUIDField` you add the folloiwng configuration to 
+your connector.
 
+```properties
+transforms.UUIDField.predicate=EqualsField
+
+predicates=EqualsField
+predicates.EqualsField.type= ch.yax.connect.quickstart.predicates.EqualsField$Value
+predicates.EqualsField.field=message
+predicates.EqualsField.expected.value=task id: 0
+predicates.EqualsField.ignore.case=true
+```
 
 ### Config Provider
 
@@ -226,9 +243,89 @@ topic=foo
 ```
 
 
+### Consumer / Producer Interceptor
+
+#### LogConsumerInterceptor
+The [`LogConsumerInterceptor`](src/main/java/ch/yax/connect/quickstart/interceptor) logs part of the Kafka message 
+(topic, timestamp, partition and offset).
+
+To enable the `LogConsumerInterceptor` add the following configuration. 
+
+> *Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. 
+> Because adding your Interceptors into the `CONNECT_PLUGIN_PATH` might not work. 
+
+```
+CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogConsumerInterceptor"
+```
 
 
+#### LogProducerInterceptor
+The [`LogProducerInterceptor`](src/main/java/ch/yax/connect/quickstart/interceptor)  logs part of the Kafka message 
+topic, timestamp and partition) before it's stored in the topic.
 
+To enable the `LogProducerInterceptor` add the following configuration.
+
+> *Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. 
+> Because adding your Interceptors into the `CONNECT_PLUGIN_PATH` might not work. 
+
+
+```
+CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogProducerInterceptor"
+```
+
+### Rest Extension
+
+#### HealthExtension
+The [`HealthExtension`](src/main/java/ch/yax/connect/quickstart/rest) is Rest extension which provides a health API (http://localhost:8083/health) to Kafka Connect.
+The response from the health API (`/health`) might look something like this:
+
+```json
+{
+   "status":"UP",
+   "connectors":[
+      {
+         "status":"UP",
+         "connectorName":"log-sink",
+         "connectorType":"sink",
+         "connectorState":"RUNNING",
+         "connectorWorkerId":"connect:8083",
+         "connectorErrors":null,
+         "tasks":[
+            {
+               "taskId":0,
+               "status":"UP",
+               "taskState":"RUNNING",
+               "tasksWorkerId":"connect:8083",
+               "taskErrors":null
+            }
+         ]
+      },
+      {
+         "status":"UP",
+         "connectorName":"random-source",
+         "connectorType":"source",
+         "connectorState":"RUNNING",
+         "connectorWorkerId":"connect:8083",
+         "connectorErrors":null,
+         "tasks":[
+            {
+               "taskId":0,
+               "status":"UP",
+               "taskState":"RUNNING",
+               "tasksWorkerId":"connect:8083",
+               "taskErrors":null
+            }
+         ]
+      }
+   ]
+}
+```
+
+To enable the Connect Rest Extensions add the following configuration:
+
+```
+CONNECT_REST_EXTENSION_CLASSES: "ch.yax.connect.quickstart.rest.HealthExtension"
+```
 
 
 ## References
