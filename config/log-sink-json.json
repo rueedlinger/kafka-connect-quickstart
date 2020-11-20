@@ -1,0 +1,22 @@
+{
+  "name": "log-sink-json",
+  "config": {
+    "connector.class": "ch.yax.connect.quickstart.sink.LogSinkConnector",
+    "topics": "random-data-json",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "true",
+    "tasks.max": "1",
+    "log.content": "value",
+    "log.level": "info",
+    "transforms": "UUIDField",
+    "transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
+    "transforms.UUIDField.field": "my-uuid",
+    "transforms.UUIDField.predicate": "EqualsField",
+    "predicates": "EqualsField",
+    "predicates.EqualsField.type": " ch.yax.connect.quickstart.predicates.EqualsField$Value",
+    "predicates.EqualsField.ignore.case": "true",
+    "predicates.EqualsField.expected.value": "task id: 0",
+    "predicates.EqualsField.field": "message"
+  }
+}

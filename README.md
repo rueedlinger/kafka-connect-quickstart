@@ -75,23 +75,72 @@ In the [config](config) directory are the configuration files for the custom sou
 - [RandomSourceConnector](src/main/java/ch/yax/connect/quickstart/source)
 
 
-This will install the `RandomSourceConnector` [(random-source.json)](config/random-source.json) 
-which publishes random data in the Kafka topic `random-data`.
+#### Source
+
+##### Avro
+This will install the `RandomSourceConnector` [(random-source-avro.json)](config/random-source-avro.json) 
+which publishes random data in the Kafka topic `random-data-avro`.
+
+>**Note** In our configuration Avro is set as default. So we don't have to set the `value.converter` in the connector configuration.
 
 ```
 curl -X POST http://localhost:8083/connectors  \
     -H "Content-Type: application/json" \
-    --data @config/random-source.json
+    --data @config/random-source-avro.json
 ```
 
 
-With the following command we install the `LogSinkConnector` [(log-sink.json)](config/log-sink.json) 
+##### JSON (embedded schema)
+The same source can be deployed as JSON version with `value.converter.schemas.enable": "true"`.
+Here the message will contain the `schema` and `payload` top-level elements in the JSON.
+
+
+```
+curl -X POST http://localhost:8083/connectors  \
+    -H "Content-Type: application/json" \
+    --data @config/random-source-json.json
+```
+
+##### JSON (schemaless)
+Or as JSON without a schema. 
+
+```
+curl -X POST http://localhost:8083/connectors  \
+    -H "Content-Type: application/json" \
+    --data @config/random-source-schemaless.json
+```
+
+#### Sink
+
+##### Avro
+With the following command we install the `LogSinkConnector` [(log-sink-avro.json)](config/log-sink-avro.json) 
 which will log the data from the Kafka topic `random-data` to the console.
+
+>**Note** In our configuration Avro is set as default. So we don't have to set the `value.converter` in the connector configuration.
 
 ```
 curl -X POST http://localhost:8083/connectors \
     -H "Content-Type: application/json" \
-    --data @config/log-sink.json
+    --data @config/log-sink-avro.json
+```
+
+##### JSON (embedded schema)
+The same sink can be deployed as JSON version with `value.converter.schemas.enable": "true"`.
+Here the message will contain the `schema` and `payload` top-level elements in the JSON.
+
+```
+curl -X POST http://localhost:8083/connectors \
+    -H "Content-Type: application/json" \
+    --data @config/log-sink-json.json
+```
+
+##### JSON (schemaless)
+Or as JSON without a schema. 
+
+```
+curl -X POST http://localhost:8083/connectors \
+    -H "Content-Type: application/json" \
+    --data @config/log-sink-schemaless.json
 ```
 
 > A detail description of the Kafka Connect Rest API can be found here, https://docs.confluent.io/current/connect/references/restapi.html

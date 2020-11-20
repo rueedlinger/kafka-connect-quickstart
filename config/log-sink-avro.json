@@ -1,13 +1,12 @@
 {
-  "name": "log-sink",
+  "name": "log-sink-avro",
   "config": {
     "connector.class": "ch.yax.connect.quickstart.sink.LogSinkConnector",
-    "kafka.topic": "random-data",
-    "log.content": "value",
-    "log.level": "info",
+    "topics": "random-data-avro",
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "tasks.max": "1",
-    "topics": "random-data",
+    "log.content": "value",
+    "log.level": "info",
     "transforms": "UUIDField",
     "transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
     "transforms.UUIDField.field": "my-uuid",
