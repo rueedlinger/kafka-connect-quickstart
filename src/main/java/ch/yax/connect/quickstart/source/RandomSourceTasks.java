@@ -1,7 +1,6 @@
 package ch.yax.connect.quickstart.source;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.config.ConfigException;
 import org.apache.kafka.common.utils.SystemTime;
 import org.apache.kafka.common.utils.Time;
 import org.apache.kafka.connect.data.Schema;
@@ -56,11 +55,12 @@ public class RandomSourceTasks extends SourceTask {
             if (currentOffset != null) {
                 lastProcessedOffset = currentOffset;
             } else {
-                // first time
+                // no position found
                 lastProcessedOffset = 0L;
             }
         } else {
-            throw new ConfigException("offset reader was not set");
+            // first time there is no offset.
+            lastProcessedOffset = 0L;
         }
         log.info("Started Random source task lastProcessedOffset: {}", lastProcessedOffset);
 
