@@ -111,6 +111,9 @@ services:
       # REST extensions
       CONNECT_REST_EXTENSION_CLASSES: "ch.yax.connect.quickstart.rest.HealthExtension"
 
+      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogConsumerInterceptor"
+      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogProducerInterceptor"
+
       # ENVs for connector configuration
       CONFIG_POLL_INTERVAL_MS: 5000
 
