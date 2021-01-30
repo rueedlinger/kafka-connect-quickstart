@@ -1,18 +1,23 @@
-# Kafka Connect Quickstart
-This is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect).
-There are examples to develop and deploy Kafka Connect plugins (connectors, transforms, etc.) from a Java Maven project. 
-This quickstart example uses the following versions:
-- Confluent Platform 6.0.0 (Docker images)
+# Ready, Steady, Connect - A Kafka Connect Quickstart
+*Ready, Steady, Connect - A Kafka Connect Quickstart* is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect).
+This project contains examples and tools to develop, inspect and deploy Kafka Connect plugins (connectors, transforms, etc.) from a Java Maven project. 
+This project uses the following versions:
+- Confluent Platform 6.0.1 (Docker images)
 - Kafka 2.6
 - Java 11
 
 The following components are part of the quickstart project:
-- The *Docker* image ([Dockerfile](Dockerfile)) will be used to run a Kafka Connect container 
-with all the Kafka Connect plugin examples and some plugins from conlfuent-hub. 
-- The Java project with the source code ([src](src)) of the Kafka Connect plugin 
-(connectors, transforms, etc.) examples.
-- The *Docker Compose* ([docker-compose.yml](docker-compose.yml)) for setting up adn running 
+- The **Docker image** ([Dockerfile](Dockerfile)) has two parts. A *builder image* to build the 
+example connector from the Java source code and the *main image* to run a Kafka Connect 
+container with all the Kafka Connect plugin examples and some plugins from conlfuent-hub.
+- The **Java source code** ([src](src)) of all the Kafka Connect plugin (connectors, transforms, etc.) examples.
+- The *Docker Compose* ([docker-compose.yml](docker-compose.yml)) for setting up and running 
 the whole infrastructure (Kafka broker, zookeeper, etc). 
+
+The following tools are available when you run the whole infrastructure with Docker Compose:
+- **[Kafdrop](https://github.com/obsidiandynamics/kafdrop) (Obsidian Dynamics)** is a web UI for viewing Kafka topics and browsing consumer groups.
+- **[Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) (Lenses.io)** is a web tool for Kafka Connect for setting up and managing connectors for multiple connect clusters.
+- **[Kafka UI](https://github.com/provectus/kafka-ui) (Provectus)** is a web UI for monitoring and management of Apache Kafka clusters. 
 
 ## CI Build
 - Builds the Java code and Docker image. ![Build Java & Docker](https://github.com/rueedlinger/kafka-connect-quickstart/workflows/Build%20Java%20&%20Docker/badge.svg) 
@@ -28,16 +33,18 @@ docker-compose up --build
 This will start the following Docker containers:
 - `zookeeper` => Apache Zookeeper (`confluentinc/cp-zookeeper`)
 - `broker` => Apache Kafka (`confluentinc/cp-kafka`)
-- `schema-registry`=> Schema Registry (`confluentinc/cp-schema-registry`)
+- `schema-registry`=> Confluent Schema Registry (`confluentinc/cp-schema-registry`)
 - `connect`=> Kafka Connect. This services uses a [custom Docker image](Dockerfile) which is based on `confluentinc/cp-kafka-connect-base`.
-- `kafdrop`=> Kafdrop – Kafka Web UI  (`obsidiandynamics/kafdrop`)
-- `connect-ui` => Kafka Connect UI from Lenses.io (`landoop/kafka-connect-ui`)
+- `kafdrop`=> [Kafdrop](https://github.com/obsidiandynamics/kafdrop) – Kafka Web UI  (`obsidiandynamics/kafdrop`)
+- `connect-ui` => [Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) from Lenses.io (`landoop/kafka-connect-ui`)
+- `kafka-ui` => [Kafka UI](https://github.com/provectus/kafka-ui) from Provectus (`provectuslabs/kafka-ui`)
 
 When all containers are started you can access different services like 
 - **Kafka Connect Rest API** => http://localhost:8083/
 - **Kafdrop** => http://localhost:8082/
 - **Schema Registry** => http://localhost:8081/
-- **kafka-connect-ui** from Lenses.io  => http://localhost:8000/
+- **Kafka UI** from Provectus => http://localhost:8080/
+- **Kafka Connect UI** from Lenses.io  => http://localhost:8000/
 
 
 By default, Apache Avro convertor will be used when nothing else is set for value or key convertor in the connector settings. 
