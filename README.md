@@ -47,8 +47,9 @@ When all containers are started you can access different services like
 - **Kafka Connect UI** from Lenses.io  => http://localhost:8000/
 
 
-By default, Apache Avro convertor will be used when nothing else is set for value or key convertor in the connector settings. 
-If you want to change the default settings just adapt the [docker-compose.yml](docker-compose.yml ) file for the Kafka Connect service.
+As default the Apache Avro convertor will be used as value and key convertor. 
+If you want to change the default settings just adapt the [docker-compose.yml](docker-compose.yml) 
+file for the Kafka Connect service or override the settings in connector config.
 
 ```
 environment:
@@ -57,6 +58,18 @@ environment:
 
   CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
   CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+```
+
+Or set the converter in connector config:
+
+```
+{
+  "name": "random-source-schemaless",
+  "config": {
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  }
+}
 ```
 
 
@@ -77,7 +90,7 @@ When Kafka Connect is up and running you should see a response like this.
 ```
 
 
-In the [config](config) directory are the configuration files for the custom source and sink connector. 
+In the [config](config) directory are the connector configuration files for the custom source and sink connector. 
 - [LogSinkConnector](src/main/java/ch/yax/connect/quickstart/sink)
 - [RandomSourceConnector](src/main/java/ch/yax/connect/quickstart/source)
 
