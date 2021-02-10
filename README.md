@@ -184,7 +184,7 @@ With the following command you should se all the connectors we have deployed so 
 curl http://localhost:8083/connectors
 ```
 
-When everthing went well yo should see an output like this:
+When everything went well yo should see an output like this:
 
 ```
 [
@@ -203,7 +203,7 @@ We can also display the state and configuration of all connectors with one simpl
 curl "http://localhost:8083/connectors?expand=status&expand=info"
 ```
 
-The output should like this.
+The output should look something like this.
 
 ```
 {
