@@ -527,8 +527,8 @@ COPY target/connect-quickstart-*.jar /usr/share/java/quickstart
 ```
 
 ## Example Plugins (Java)
-### Kafka Connect Plugins
-Here are some examples of Kafka Connect Plugins which can be used to build your own plugins:
+
+Here are some examples of **Kafka Connect Plugins** which can be used to build your own plugins:
 - **Sink Connector** - loading data from kafka and store it into an external system (eg. database).
 - **Source Connector** - loading data from an external system and store it into kafka.
 - **Single Message Transforms (SMTs)** - transforms a message when processed with a connector.
@@ -538,8 +538,7 @@ condition is `true` ([KIP-585](https://cwiki.apache.org/confluence/display/KAFKA
 - **Rest Extensions** - with the Connect Rest Extension Plugin ([KIP-285](https://cwiki.apache.org/confluence/display/KAFKA/KIP-285%3A+Connect+Rest+Extension+Plugin)) you can extend the existing Rest API.
 - **Converters** - provide support for translating between Kafka Connect's runtime data format and the raw payload of the Kafka messages.
 
-### Kafka Plugins
-Here are some examples of general Kafka Plugins which can be used with Kafka Connect:
+Here are some examples of general **Kafka Plugins** which can be used with Kafka Connect:
 - **Kafka Consumer / Producer Interceptors** - the Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
 can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be used to extend Kafka Connect.
 - **Metrics Reporter** can be configured to report metrics from Kafka Connect.
