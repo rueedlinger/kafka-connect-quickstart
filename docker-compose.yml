@@ -1,7 +1,7 @@
 version: '3'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:6.0.0
+    image: confluentinc/cp-zookeeper:6.0.1
     hostname: zookeeper
     container_name: quickstart-zookeeper
     ports:
@@ -11,7 +11,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-kafka:6.0.0
+    image: confluentinc/cp-kafka:6.0.1
     hostname: broker
     container_name: quickstart-broker
     depends_on:
@@ -30,7 +30,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:6.0.0
+    image: confluentinc/cp-schema-registry:6.0.1
     hostname: schema-registry
     container_name: quickstart-schema-registry
     depends_on:
@@ -124,13 +124,14 @@ services:
       CONNECT_CONFIG_PROVIDERS_ENV_CLASS: "ch.yax.connect.quickstart.config.provider.EnvironmentConfigProvider"
       CONNECT_CONFIG_PROVIDERS_ENV_PARAM_BLACKLIST: "foo,bar"
 
-      # REST extensions
+      # Connect REST extensions
       CONNECT_REST_EXTENSION_CLASSES: "ch.yax.connect.quickstart.rest.HealthExtension"
 
+      # Kafka consumer / producer interceptors
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogConsumerInterceptor"
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogProducerInterceptor"
 
-      # ENVs for connector configuration
+      # ENVs for connector configurations
       CONFIG_POLL_INTERVAL_MS: 5000
 
 

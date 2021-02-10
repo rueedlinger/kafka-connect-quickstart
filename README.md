@@ -47,7 +47,7 @@ When all containers are started you can access different services like
 - **Kafka Connect UI** from Lenses.io  => http://localhost:8000/
 
 
-As default the Apache Avro convertor will be used as value and key convertor. 
+As default [Avro](https://avro.apache.org/) will be used as value and key convertor. 
 If you want to change the default settings just adapt the [docker-compose.yml](docker-compose.yml) 
 file for the Kafka Connect service or override the settings in connector config.
 
@@ -83,9 +83,9 @@ When Kafka Connect is up and running you should see a response like this.
 
 ```json
 {
-  "version": "6.0.0-ccs",
-  "commit": "17b744c31e00868b",
-  "kafka_cluster_id": "nj5o6tIHQIawd0muagtQmQ"
+  "version": "6.0.1-ccs",
+  "commit": "9c1fbb3db1e0d69d",
+  "kafka_cluster_id": "614erc9tQx6LxGXtzBvh9w"
 }
 ```
 
@@ -95,7 +95,7 @@ In the [config](config) directory are the connector configuration files for the 
 - [RandomSourceConnector](src/main/java/ch/yax/connect/quickstart/source)
 
 
-#### Source
+#### Source Connector
 
 ##### Avro
 This will install the `RandomSourceConnector` [(random-source-avro.json)](config/random-source-avro.json) 
@@ -111,8 +111,14 @@ curl -X POST http://localhost:8083/connectors  \
 
 
 ##### JSON (embedded schema)
-The same source can be deployed as JSON version with `value.converter.schemas.enable": "true"`.
-Here the message will contain the `schema` and `payload` top-level elements in the JSON.
+The same source can be deployed with a JSON converter. 
+
+```
+"value.converter": "org.apache.kafka.connect.json.JsonConverter",
+"value.converter.schemas.enable": "true",
+```
+
+Here the message will contain the `schema` and `payload` as top-level elements in the JSON.
 
 
 ```
@@ -122,7 +128,14 @@ curl -X POST http://localhost:8083/connectors  \
 ```
 
 ##### JSON (schemaless)
-Or as JSON without a schema. 
+Or as JSON without a schema.
+
+```
+"value.converter": "org.apache.kafka.connect.json.JsonConverter",
+"value.converter.schemas.enable": "false",
+```
+
+This will only contain the raw JSON message.
 
 ```
 curl -X POST http://localhost:8083/connectors  \
@@ -130,7 +143,7 @@ curl -X POST http://localhost:8083/connectors  \
     --data @config/random-source-schemaless.json
 ```
 
-#### Sink
+#### Sink Connector
 
 ##### Avro
 With the following command we install the `LogSinkConnector` [(log-sink-avro.json)](config/log-sink-avro.json) 
@@ -145,7 +158,7 @@ curl -X POST http://localhost:8083/connectors \
 ```
 
 ##### JSON (embedded schema)
-The same sink can be deployed as JSON version with `value.converter.schemas.enable": "true"`.
+The same sink can be deployed with JSON converter.
 Here the message will contain the `schema` and `payload` top-level elements in the JSON.
 
 ```
@@ -163,12 +176,321 @@ curl -X POST http://localhost:8083/connectors \
     --data @config/log-sink-schemaless.json
 ```
 
+#### Let’s See What We Got!
+
+With the following command you should se all the connectors we have deployed so fare.
+
+```
+curl http://localhost:8083/connectors
+```
+
+When everthing went well yo should see an output like this:
+
+```
+[
+  "random-source-json",
+  "random-source-schemaless",
+  "random-source-avro",
+  "log-sink-json",
+  "log-sink-avro",
+  "log-sink-schemaless"
+]
+```
+
+We can also display the state and configuration of all connectors with one simple command.
+
+```
+curl "http://localhost:8083/connectors?expand=status&expand=info"
+```
+
+The output should like this.
+
+```
+{
+  "random-source-json": {
+    "status": {
+      "name": "random-source-json",
+      "connector": {
+        "state": "RUNNING",
+        "worker_id": "connect:8083"
+      },
+      "tasks": [
+        {
+          "id": 0,
+          "state": "RUNNING",
+          "worker_id": "connect:8083"
+        },
+        {
+          "id": 1,
+          "state": "RUNNING",
+          "worker_id": "connect:8083"
+        }
+      ],
+      "type": "source"
+    },
+    "info": {
+      "name": "random-source-json",
+      "config": {
+        "connector.class": "ch.yax.connect.quickstart.source.RandomSourceConnector",
+        "tasks.max": "2",
+        "poll.interval.ms": "${env:CONFIG_POLL_INTERVAL_MS}",
+        "value.converter.schemas.enable": "true",
+        "name": "random-source-json",
+        "topic": "random-data-json",
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
+      },
+      "tasks": [
+        {
+          "connector": "random-source-json",
+          "task": 0
+        },
+        {
+          "connector": "random-source-json",
+          "task": 1
+        }
+      ],
+      "type": "source"
+    }
+  },
+  "random-source-schemaless": {
+    "status": {
+      "name": "random-source-schemaless",
+      "connector": {
+        "state": "RUNNING",
+        "worker_id": "connect:8083"
+      },
+      "tasks": [
+        {
+          "id": 0,
+          "state": "RUNNING",
+          "worker_id": "connect:8083"
+        },
+        {
+          "id": 1,
+          "state": "RUNNING",
+          "worker_id": "connect:8083"
+        }
+      ],
+      "type": "source"
+    },
+    "info": {
+      "name": "random-source-schemaless",
+      "config": {
+        "connector.class": "ch.yax.connect.quickstart.source.RandomSourceConnector",
+        "tasks.max": "2",
+        "poll.interval.ms": "${env:CONFIG_POLL_INTERVAL_MS}",
+        "value.converter.schemas.enable": "false",
+        "name": "random-source-schemaless",
+        "topic": "random-data-schemaless",
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
+      },
+      "tasks": [
+        {
+          "connector": "random-source-schemaless",
+          "task": 0
+        },
+        {
+          "connector": "random-source-schemaless",
+          "task": 1
+        }
+      ],
+      "type": "source"
+    }
+  },
+  "random-source-avro": {
+    "status": {
+      "name": "random-source-avro",
+      "connector": {
+        "state": "RUNNING",
+        "worker_id": "connect:8083"
+      },
+      "tasks": [
+        {
+          "id": 0,
+          "state": "RUNNING",
+          "worker_id": "connect:8083"
+        },
+        {
+          "id": 1,
+          "state": "RUNNING",
+          "worker_id": "connect:8083"
+        }
+      ],
+      "type": "source"
+    },
+    "info": {
+      "name": "random-source-avro",
+      "config": {
+        "connector.class": "ch.yax.connect.quickstart.source.RandomSourceConnector",
+        "tasks.max": "2",
+        "poll.interval.ms": "${env:CONFIG_POLL_INTERVAL_MS}",
+        "name": "random-source-avro",
+        "topic": "random-data-avro",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
+      },
+      "tasks": [
+        {
+          "connector": "random-source-avro",
+          "task": 0
+        },
+        {
+          "connector": "random-source-avro",
+          "task": 1
+        }
+      ],
+      "type": "source"
+    }
+  },
+  "log-sink-json": {
+    "status": {
+      "name": "log-sink-json",
+      "connector": {
+        "state": "RUNNING",
+        "worker_id": "connect:8083"
+      },
+      "tasks": [
+        {
+          "id": 0,
+          "state": "RUNNING",
+          "worker_id": "connect:8083"
+        }
+      ],
+      "type": "sink"
+    },
+    "info": {
+      "name": "log-sink-json",
+      "config": {
+        "connector.class": "ch.yax.connect.quickstart.sink.LogSinkConnector",
+        "transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
+        "topics": "random-data-json",
+        "tasks.max": "1",
+        "log.content": "value",
+        "transforms.UUIDField.field": "my-uuid",
+        "transforms": "UUIDField",
+        "predicates": "EqualsField",
+        "predicates.EqualsField.ignore.case": "true",
+        "transforms.UUIDField.predicate": "EqualsField",
+        "predicates.EqualsField.expected.value": "task id: 0",
+        "predicates.EqualsField.field": "message",
+        "value.converter.schemas.enable": "true",
+        "name": "log-sink-json",
+        "log.level": "info",
+        "predicates.EqualsField.type": " ch.yax.connect.quickstart.predicates.EqualsField$Value",
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
+      },
+      "tasks": [
+        {
+          "connector": "log-sink-json",
+          "task": 0
+        }
+      ],
+      "type": "sink"
+    }
+  },
+  "log-sink-avro": {
+    "status": {
+      "name": "log-sink-avro",
+      "connector": {
+        "state": "RUNNING",
+        "worker_id": "connect:8083"
+      },
+      "tasks": [
+        {
+          "id": 0,
+          "state": "RUNNING",
+          "worker_id": "connect:8083"
+        }
+      ],
+      "type": "sink"
+    },
+    "info": {
+      "name": "log-sink-avro",
+      "config": {
+        "connector.class": "ch.yax.connect.quickstart.sink.LogSinkConnector",
+        "transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
+        "topics": "random-data-avro",
+        "tasks.max": "1",
+        "log.content": "value",
+        "transforms.UUIDField.field": "my-uuid",
+        "transforms": "UUIDField",
+        "predicates": "EqualsField",
+        "predicates.EqualsField.ignore.case": "true",
+        "transforms.UUIDField.predicate": "EqualsField",
+        "predicates.EqualsField.expected.value": "task id: 0",
+        "predicates.EqualsField.field": "message",
+        "name": "log-sink-avro",
+        "log.level": "info",
+        "predicates.EqualsField.type": " ch.yax.connect.quickstart.predicates.EqualsField$Value",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
+      },
+      "tasks": [
+        {
+          "connector": "log-sink-avro",
+          "task": 0
+        }
+      ],
+      "type": "sink"
+    }
+  },
+  "log-sink-schemaless": {
+    "status": {
+      "name": "log-sink-schemaless",
+      "connector": {
+        "state": "RUNNING",
+        "worker_id": "connect:8083"
+      },
+      "tasks": [
+        {
+          "id": 0,
+          "state": "RUNNING",
+          "worker_id": "connect:8083"
+        }
+      ],
+      "type": "sink"
+    },
+    "info": {
+      "name": "log-sink-schemaless",
+      "config": {
+        "connector.class": "ch.yax.connect.quickstart.sink.LogSinkConnector",
+        "transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
+        "topics": "random-data-schemaless",
+        "tasks.max": "1",
+        "log.content": "value",
+        "transforms.UUIDField.field": "my-uuid",
+        "transforms": "UUIDField",
+        "predicates": "EqualsField",
+        "predicates.EqualsField.ignore.case": "true",
+        "transforms.UUIDField.predicate": "EqualsField",
+        "predicates.EqualsField.expected.value": "task id: 0",
+        "predicates.EqualsField.field": "message",
+        "value.converter.schemas.enable": "false",
+        "name": "log-sink-schemaless",
+        "log.level": "info",
+        "predicates.EqualsField.type": " ch.yax.connect.quickstart.predicates.EqualsField$Value",
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
+      },
+      "tasks": [
+        {
+          "connector": "log-sink-schemaless",
+          "task": 0
+        }
+      ],
+      "type": "sink"
+    }
+  }
+}
+```
+
 > A detail description of the Kafka Connect Rest API can be found here, https://docs.confluent.io/current/connect/references/restapi.html
 
 
 ### How to Install Other Connectors
 
-If you want a special Connect plugin installed you have three options:
+If you want to install a special Connect plugin you have three options:
 
 1. Download the JAR file and copy it in the [mount](mount) directory. This directory will be 
 automatically mounted as Docker volume to the Kafka Connect plugin path `/etc/kafka-connect/jars` 
@@ -188,7 +510,7 @@ services:
 ```
 
 
-2. Modify the [Dockerfile](Dockerfile) and install a plugin with the `confluent-hub` CLI.
+2. Modify the [Dockerfile](Dockerfile) and install the plugin with the `confluent-hub` CLI.
 
 ```
 FROM confluentinc/cp-kafka-connect-base:6.0.0
@@ -201,20 +523,20 @@ RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.4.0
 ```
 FROM confluentinc/cp-kafka-connect-base:6.0.0
 
-COPY target/connect-quickstart-*.jar /usr/share/java
+COPY target/connect-quickstart-*.jar /usr/share/java/quickstart
 ```
 
 ## Example Plugins (Java)
 Here are some examples of Kafka Connect Plugins which can be used to build your own plugins:
 - **Sink Connector** - loading data from kafka and store it into an external system (eg. database).
 - **Source Connector** - loading data from an external system and store it into kafka.
-- **Single Message Transforms (SMTs)** - transforms a message when processing with a connector.
+- **Single Message Transforms (SMTs)** - transforms a message when processed with a connector.
 - **Predicates** - Transforms can be configured with a predicate so that transforms only applies when the 
-condition was satisfied ([KIP-585](https://cwiki.apache.org/confluence/display/KAFKA/KIP-585%3A+Filter+and+Conditional+SMTs)).
-- **Config Providers** - loads configurations for the connector from external resources.
-- **Kafka Consumer / Producer Interceptors** - the Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
-can be used to intercept Kafka messages. 
+condition is `true` ([KIP-585](https://cwiki.apache.org/confluence/display/KAFKA/KIP-585%3A+Filter+and+Conditional+SMTs)).
+- **Config Providers** - can load configurations for the connectors from external resources.
 - **Rest Extensions** - with the Connect Rest Extension Plugin ([KIP-285](https://cwiki.apache.org/confluence/display/KAFKA/KIP-285%3A+Connect+Rest+Extension+Plugin)) you can extend the existing Rest API.
+- **Kafka Consumer / Producer Interceptors** - the Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
+can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be used to extend Kafka Connect.
 
 ### Source Connector
 The [`RandomSourceConnector`](src/main/java/ch/yax/connect/quickstart/source) will create random data. The output data could look like this:
@@ -313,37 +635,6 @@ tasks.max=1
 topic=foo
 ```
 
-
-### Consumer / Producer Interceptor
-
-#### LogConsumerInterceptor
-The [`LogConsumerInterceptor`](src/main/java/ch/yax/connect/quickstart/interceptor) logs part of the Kafka message 
-(topic, timestamp, partition and offset).
-
-To enable the `LogConsumerInterceptor` add the following configuration. 
-
-> *Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. 
-> Because adding your Interceptors into the `CONNECT_PLUGIN_PATH` might not work. 
-
-```
-CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogConsumerInterceptor"
-```
-
-
-#### LogProducerInterceptor
-The [`LogProducerInterceptor`](src/main/java/ch/yax/connect/quickstart/interceptor)  logs part of the Kafka message 
-topic, timestamp and partition) before it's stored in the topic.
-
-To enable the `LogProducerInterceptor` add the following configuration.
-
-> *Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. 
-> Because adding your Interceptors into the `CONNECT_PLUGIN_PATH` might not work. 
-
-
-```
-CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogProducerInterceptor"
-```
-
 ### Rest Extension
 
 #### HealthExtension
@@ -403,6 +694,38 @@ To enable the Connect Rest Extensions add the following configuration:
 
 ```
 CONNECT_REST_EXTENSION_CLASSES: "ch.yax.connect.quickstart.rest.HealthExtension"
+```
+
+
+
+### Consumer / Producer Interceptor
+
+#### LogConsumerInterceptor
+The [`LogConsumerInterceptor`](src/main/java/ch/yax/connect/quickstart/interceptor) logs part of the Kafka message 
+(topic, timestamp, partition and offset).
+
+To enable the `LogConsumerInterceptor` add the following configuration. 
+
+> *Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. 
+> Because adding your Interceptors into the `CONNECT_PLUGIN_PATH` might not work. 
+
+```
+CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogConsumerInterceptor"
+```
+
+
+#### LogProducerInterceptor
+The [`LogProducerInterceptor`](src/main/java/ch/yax/connect/quickstart/interceptor)  logs part of the Kafka message 
+topic, timestamp and partition) before it's stored in the topic.
+
+To enable the `LogProducerInterceptor` add the following configuration.
+
+> *Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. 
+> Because adding your Interceptors into the `CONNECT_PLUGIN_PATH` might not work. 
+
+
+```
+CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogProducerInterceptor"
 ```
 
 
