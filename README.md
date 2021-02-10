@@ -538,7 +538,7 @@ condition is `true` ([KIP-585](https://cwiki.apache.org/confluence/display/KAFKA
 - **Converters** - provide support for translating between Kafka Connect's runtime data format and the raw payload of the Kafka messages.
 - **Kafka Consumer / Producer Interceptors** - the Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
 can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be used to extend Kafka Connect.
-- *Metrics Reporter* can listen as new metrics are created so they can be reported. 
+- **Metrics Reporter** can be configured to report metrics from Kafka Connect.
 
 ### Source Connector
 The [`RandomSourceConnector`](src/main/java/ch/yax/connect/quickstart/source) will create random data. The output data could look like this:
