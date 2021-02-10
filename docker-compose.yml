@@ -132,6 +132,9 @@ services:
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogConsumerInterceptor"
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogProducerInterceptor"
 
+      # Metrics reporter
+      CONNECT_METRIC_REPORTERS: "ch.yax.connect.quickstart.metrics.LogMetricsReporter"
+
       # ENVs for connector configurations
       CONFIG_POLL_INTERVAL_MS: 5000
 

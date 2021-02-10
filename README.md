@@ -538,6 +538,7 @@ condition is `true` ([KIP-585](https://cwiki.apache.org/confluence/display/KAFKA
 - **Converters** - provide support for translating between Kafka Connect's runtime data format and the raw payload of the Kafka messages.
 - **Kafka Consumer / Producer Interceptors** - the Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
 can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be used to extend Kafka Connect.
+- *Metrics Reporter* can listen as new metrics are created so they can be reported. 
 
 ### Source Connector
 The [`RandomSourceConnector`](src/main/java/ch/yax/connect/quickstart/source) will create random data. The output data could look like this:
@@ -745,15 +746,44 @@ The [`LogProducerInterceptor`](src/main/java/ch/yax/connect/quickstart/intercept
 topic, timestamp and partition) before it's stored in the topic.
 
 To enable the `LogProducerInterceptor` add the following configuration.
-
-> *Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. 
-> Because adding your Interceptors into the `CONNECT_PLUGIN_PATH` might not work. 
-
-
 ```yaml
 CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogProducerInterceptor"
 ```
 
+
+*Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. 
+Because adding your Interceptors to the `CONNECT_PLUGIN_PATH` might not work. 
+
+```dockerfile
+ENV CLASSPATH=/usr/share/java/quickstart/*
+```
+
+### Metric Reporter
+
+#### LogMetricsReporter
+The [`LogMetricsReporter`](src/main/java/ch/yax/connect/quickstart/metrics) will log various metrics 
+from Kafka Connect. 
+
+To enable the `LogMetricsReporter` add the following configuration.
+
+```yaml
+CONNECT_METRIC_REPORTERS: "ch.yax.connect.quickstart.metrics.LogMetricsReporter"
+```
+
+You have to add the JAR of the Metrics Report in the Java classpath. Because adding 
+your JAR to the `CONNECT_PLUGIN_PATH` will not work.
+If you don't put the JAR in the classpath you get a `ClassNotFoundException`. 
+For a production case you should separate Kafka Connect plugins from the `MetricsReporter`s.
+
+```dockerfile
+ENV CLASSPATH=/usr/share/java/quickstart/*
+```
+
+When you have some connectors running you might see some log statement like this. 
+
+```bash
+[2021-02-10 23:09:41,815] INFO metricChange: name: MetricName [name=record-send-total, group=producer-topic-metrics, description=The total number of records sent for a topic., tags={client-id=producer-1, topic=docker-connect-offsets}], value: 0.0 (ch.yax.connect.quickstart.metrics.LogMetricsReporter)
+```
 
 ## References
 
