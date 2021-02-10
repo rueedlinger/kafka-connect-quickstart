@@ -26,7 +26,7 @@ The following tools are available when you run the whole infrastructure with Doc
 ### Build and Startup the Environment
 To use the custom sink and source connectors we have to build and start the Docker containers. 
 
-```
+```bash
 docker-compose up --build
 ```
 
@@ -51,7 +51,7 @@ As default [Avro](https://avro.apache.org/) will be used as value and key conver
 If you want to change the default settings just adapt the [docker-compose.yml](docker-compose.yml) 
 file for the Kafka Connect service or override the settings in connector config.
 
-```
+```yaml
 environment:
   CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
   CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL:  http://schema-registry:8081
@@ -62,7 +62,7 @@ environment:
 
 Or set the converter in connector config:
 
-```
+```json
 {
   "name": "random-source-schemaless",
   "config": {
@@ -75,7 +75,7 @@ Or set the converter in connector config:
 
 ### Let’s Deploy Some Connectors
 First we have to check if Kafka Connect is available.
-```
+```bash
 curl http://localhost:8083/
 ```
 
@@ -103,7 +103,7 @@ which publishes random data in the Kafka topic `random-data-avro`.
 
 >**Note** In our configuration Avro is set as default. So we don't have to set the `value.converter` in the connector configuration.
 
-```
+```bash
 curl -X POST http://localhost:8083/connectors  \
     -H "Content-Type: application/json" \
     --data @config/random-source-avro.json
@@ -113,7 +113,7 @@ curl -X POST http://localhost:8083/connectors  \
 ##### JSON (embedded schema)
 The same source can be deployed with a JSON converter. 
 
-```
+```properties
 "value.converter": "org.apache.kafka.connect.json.JsonConverter",
 "value.converter.schemas.enable": "true",
 ```
@@ -121,7 +121,7 @@ The same source can be deployed with a JSON converter.
 Here the message will contain the `schema` and `payload` as top-level elements in the JSON.
 
 
-```
+```bash
 curl -X POST http://localhost:8083/connectors  \
     -H "Content-Type: application/json" \
     --data @config/random-source-json.json
@@ -130,14 +130,14 @@ curl -X POST http://localhost:8083/connectors  \
 ##### JSON (schemaless)
 Or as JSON without a schema.
 
-```
+```properties
 "value.converter": "org.apache.kafka.connect.json.JsonConverter",
 "value.converter.schemas.enable": "false",
 ```
 
 This will only contain the raw JSON message.
 
-```
+```bash
 curl -X POST http://localhost:8083/connectors  \
     -H "Content-Type: application/json" \
     --data @config/random-source-schemaless.json
@@ -151,7 +151,7 @@ which will log the data from the Kafka topic `random-data` to the console.
 
 >**Note** In our configuration Avro is set as default. So we don't have to set the `value.converter` in the connector configuration.
 
-```
+```bash
 curl -X POST http://localhost:8083/connectors \
     -H "Content-Type: application/json" \
     --data @config/log-sink-avro.json
@@ -161,7 +161,7 @@ curl -X POST http://localhost:8083/connectors \
 The same sink can be deployed with JSON converter.
 Here the message will contain the `schema` and `payload` top-level elements in the JSON.
 
-```
+```bash
 curl -X POST http://localhost:8083/connectors \
     -H "Content-Type: application/json" \
     --data @config/log-sink-json.json
@@ -170,7 +170,7 @@ curl -X POST http://localhost:8083/connectors \
 ##### JSON (schemaless)
 Or as JSON without a schema. 
 
-```
+```bash
 curl -X POST http://localhost:8083/connectors \
     -H "Content-Type: application/json" \
     --data @config/log-sink-schemaless.json
@@ -180,13 +180,13 @@ curl -X POST http://localhost:8083/connectors \
 
 With the following command you should se all the connectors we have deployed so fare.
 
-```
+```bash
 curl http://localhost:8083/connectors
 ```
 
 When everything went well yo should see an output like this:
 
-```
+```json
 [
   "random-source-json",
   "random-source-schemaless",
@@ -199,13 +199,13 @@ When everything went well yo should see an output like this:
 
 We can also display the state and configuration of all connectors with one simple command.
 
-```
+```bash
 curl "http://localhost:8083/connectors?expand=status&expand=info"
 ```
 
 The output should look something like this.
 
-```
+```json
 {
   "random-source-json": {
     "status": {
@@ -496,7 +496,7 @@ If you want to install a special Connect plugin you have three options:
 automatically mounted as Docker volume to the Kafka Connect plugin path `/etc/kafka-connect/jars` 
 (`CONNECT_PLUGIN_PATH`).
 
-```
+```yaml
 services:
   
   connect:
@@ -512,7 +512,7 @@ services:
 
 2. Modify the [Dockerfile](Dockerfile) and install the plugin with the `confluent-hub` CLI.
 
-```
+```dockerfile
 FROM confluentinc/cp-kafka-connect-base:6.0.0
 
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.4.0
@@ -520,7 +520,7 @@ RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.4.0
 > 
 
 3. Build a connector plugin fat jar with Maven and add it to Kafka Connect plugin path.
-```
+```dockerfile
 FROM confluentinc/cp-kafka-connect-base:6.0.0
 
 COPY target/connect-quickstart-*.jar /usr/share/java/quickstart
@@ -616,7 +616,7 @@ The config provider `EnvironmentConfigProvider` supports the following config pa
 - `BLACKLIST` a list of env variables which should be filtered out. When set to `"foo,bar"` 
 
 
-```bash
+```yaml
 CONNECT_CONFIG_PROVIDERS: "env"
 CONNECT_CONFIG_PROVIDERS_ENV_CLASS: "ch.yax.connect.quickstart.config.provider.EnvironmentConfigProvider"
 CONNECT_CONFIG_PROVIDERS_ENV_PARAM_BLACKLIST: "foo,bar"
@@ -692,7 +692,7 @@ in `META-INF/services` which contains the full class name of your rest extension
 
 To enable the Connect Rest Extensions add the following configuration:
 
-```
+```yaml
 CONNECT_REST_EXTENSION_CLASSES: "ch.yax.connect.quickstart.rest.HealthExtension"
 ```
 
@@ -709,7 +709,7 @@ To enable the `LogConsumerInterceptor` add the following configuration.
 > *Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. 
 > Because adding your Interceptors into the `CONNECT_PLUGIN_PATH` might not work. 
 
-```
+```yaml
 CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogConsumerInterceptor"
 ```
 
@@ -724,7 +724,7 @@ To enable the `LogProducerInterceptor` add the following configuration.
 > Because adding your Interceptors into the `CONNECT_PLUGIN_PATH` might not work. 
 
 
-```
+```yaml
 CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogProducerInterceptor"
 ```
 
