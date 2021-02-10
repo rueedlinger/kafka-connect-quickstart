@@ -535,6 +535,7 @@ Here are some examples of Kafka Connect Plugins which can be used to build your 
 condition is `true` ([KIP-585](https://cwiki.apache.org/confluence/display/KAFKA/KIP-585%3A+Filter+and+Conditional+SMTs)).
 - **Config Providers** - can load configurations for the connectors from external resources.
 - **Rest Extensions** - with the Connect Rest Extension Plugin ([KIP-285](https://cwiki.apache.org/confluence/display/KAFKA/KIP-285%3A+Connect+Rest+Extension+Plugin)) you can extend the existing Rest API.
+- **Converters** - provide support for translating between Kafka Connect's runtime data format and the raw payload of the Kafka messages.
 - **Kafka Consumer / Producer Interceptors** - the Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
 can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be used to extend Kafka Connect.
 
@@ -696,7 +697,32 @@ To enable the Connect Rest Extensions add the following configuration:
 CONNECT_REST_EXTENSION_CLASSES: "ch.yax.connect.quickstart.rest.HealthExtension"
 ```
 
+### Converter
+#### AvroDebugConvertor
+The [`AvroDebugConvertor`](src/main/java/ch/yax/connect/quickstart/converter) is a Wrapper around 
+the `io.confluent.connect.avro.AvroConverter`. The `AvroDebugConvertor` will just log the internal connect 
+data structure which was created or received.
 
+```yaml
+CONNECT_VALUE_CONVERTER: ch.yax.connect.quickstart.converter.AvroDebugConverter
+```
+
+This will display a log output the data structure which was created.
+```bash
+quickstart-connect | [2021-02-10 22:09:22,907] INFO Topic random-data-avro, created connect data 'SchemaAndValue{schema=Schema{ch.yax.connect.quickstart.source.RandomData:STRUCT}, value=Struct{value=7476346340551272290,count=632,message=Task Id: 1,timestamp=Wed Feb 10 22:09:22 GMT 2021}}' (ch.yax.connect.quickstart.converter.AvroDebugConverter)
+```
+
+It will also log the data structure which was received.
+
+```bash
+quickstart-connect | [2021-02-10 22:09:28,377] INFO Topic random-data-avro, got connect data 'Struct{value=6085501730739912467,count=633,message=Task Id: 1,timestamp=Wed Feb 10 22:09:28 GMT 2021}' and schema 'Schema{ch.yax.connect.quickstart.source.RandomData:STRUCT}' (ch.yax.connect.quickstart.converter.AvroDebugConverter)
+```
+#### JsonDebugConverter
+A similar converter (`JsonDebugConverter`) exists also for the`org.apache.kafka.connect.json.JsonConverter`.
+
+```properties
+value.converter=ch.yax.connect.quickstart.converter.JsonDebugConverter
+```
 
 ### Consumer / Producer Interceptor
 
