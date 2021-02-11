@@ -1,5 +1,5 @@
 # Ready, Steady, Connect - A Kafka Connect Quickstart
-*Ready, Steady, Connect - A Kafka Connect Quickstart* is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect).
+*'Ready, Steady, Connect - A Kafka Connect Quickstart'* is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect).
 This project contains examples and tools to develop, inspect and deploy Kafka Connect plugins (connectors, transforms, etc.) from a Java Maven project. 
 This project uses the following versions:
 - Confluent Platform 6.0.1 (Docker images)
@@ -19,7 +19,7 @@ The following tools are available when you run the whole infrastructure with Doc
 - **[Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) (Lenses.io)** is a web tool for Kafka Connect for setting up and managing connectors for multiple connect clusters.
 - **[Kafka UI](https://github.com/provectus/kafka-ui) (Provectus)** is a web UI for monitoring and management of Apache Kafka clusters. 
 
-## CI Build
+CI Build:
 - Builds the Java code and Docker image. ![Build Java & Docker](https://github.com/rueedlinger/kafka-connect-quickstart/workflows/Build%20Java%20&%20Docker/badge.svg) 
 
 ## Getting Started
@@ -203,289 +203,9 @@ We can also display the state and configuration of all connectors with one simpl
 curl "http://localhost:8083/connectors?expand=status&expand=info"
 ```
 
-The output should look something like this.
-
-```json
-{
-  "random-source-json": {
-    "status": {
-      "name": "random-source-json",
-      "connector": {
-        "state": "RUNNING",
-        "worker_id": "connect:8083"
-      },
-      "tasks": [
-        {
-          "id": 0,
-          "state": "RUNNING",
-          "worker_id": "connect:8083"
-        },
-        {
-          "id": 1,
-          "state": "RUNNING",
-          "worker_id": "connect:8083"
-        }
-      ],
-      "type": "source"
-    },
-    "info": {
-      "name": "random-source-json",
-      "config": {
-        "connector.class": "ch.yax.connect.quickstart.source.RandomSourceConnector",
-        "tasks.max": "2",
-        "poll.interval.ms": "${env:CONFIG_POLL_INTERVAL_MS}",
-        "value.converter.schemas.enable": "true",
-        "name": "random-source-json",
-        "topic": "random-data-json",
-        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
-      },
-      "tasks": [
-        {
-          "connector": "random-source-json",
-          "task": 0
-        },
-        {
-          "connector": "random-source-json",
-          "task": 1
-        }
-      ],
-      "type": "source"
-    }
-  },
-  "random-source-schemaless": {
-    "status": {
-      "name": "random-source-schemaless",
-      "connector": {
-        "state": "RUNNING",
-        "worker_id": "connect:8083"
-      },
-      "tasks": [
-        {
-          "id": 0,
-          "state": "RUNNING",
-          "worker_id": "connect:8083"
-        },
-        {
-          "id": 1,
-          "state": "RUNNING",
-          "worker_id": "connect:8083"
-        }
-      ],
-      "type": "source"
-    },
-    "info": {
-      "name": "random-source-schemaless",
-      "config": {
-        "connector.class": "ch.yax.connect.quickstart.source.RandomSourceConnector",
-        "tasks.max": "2",
-        "poll.interval.ms": "${env:CONFIG_POLL_INTERVAL_MS}",
-        "value.converter.schemas.enable": "false",
-        "name": "random-source-schemaless",
-        "topic": "random-data-schemaless",
-        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
-      },
-      "tasks": [
-        {
-          "connector": "random-source-schemaless",
-          "task": 0
-        },
-        {
-          "connector": "random-source-schemaless",
-          "task": 1
-        }
-      ],
-      "type": "source"
-    }
-  },
-  "random-source-avro": {
-    "status": {
-      "name": "random-source-avro",
-      "connector": {
-        "state": "RUNNING",
-        "worker_id": "connect:8083"
-      },
-      "tasks": [
-        {
-          "id": 0,
-          "state": "RUNNING",
-          "worker_id": "connect:8083"
-        },
-        {
-          "id": 1,
-          "state": "RUNNING",
-          "worker_id": "connect:8083"
-        }
-      ],
-      "type": "source"
-    },
-    "info": {
-      "name": "random-source-avro",
-      "config": {
-        "connector.class": "ch.yax.connect.quickstart.source.RandomSourceConnector",
-        "tasks.max": "2",
-        "poll.interval.ms": "${env:CONFIG_POLL_INTERVAL_MS}",
-        "name": "random-source-avro",
-        "topic": "random-data-avro",
-        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
-      },
-      "tasks": [
-        {
-          "connector": "random-source-avro",
-          "task": 0
-        },
-        {
-          "connector": "random-source-avro",
-          "task": 1
-        }
-      ],
-      "type": "source"
-    }
-  },
-  "log-sink-json": {
-    "status": {
-      "name": "log-sink-json",
-      "connector": {
-        "state": "RUNNING",
-        "worker_id": "connect:8083"
-      },
-      "tasks": [
-        {
-          "id": 0,
-          "state": "RUNNING",
-          "worker_id": "connect:8083"
-        }
-      ],
-      "type": "sink"
-    },
-    "info": {
-      "name": "log-sink-json",
-      "config": {
-        "connector.class": "ch.yax.connect.quickstart.sink.LogSinkConnector",
-        "transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
-        "topics": "random-data-json",
-        "tasks.max": "1",
-        "log.content": "value",
-        "transforms.UUIDField.field": "my-uuid",
-        "transforms": "UUIDField",
-        "predicates": "EqualsField",
-        "predicates.EqualsField.ignore.case": "true",
-        "transforms.UUIDField.predicate": "EqualsField",
-        "predicates.EqualsField.expected.value": "task id: 0",
-        "predicates.EqualsField.field": "message",
-        "value.converter.schemas.enable": "true",
-        "name": "log-sink-json",
-        "log.level": "info",
-        "predicates.EqualsField.type": " ch.yax.connect.quickstart.predicates.EqualsField$Value",
-        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
-      },
-      "tasks": [
-        {
-          "connector": "log-sink-json",
-          "task": 0
-        }
-      ],
-      "type": "sink"
-    }
-  },
-  "log-sink-avro": {
-    "status": {
-      "name": "log-sink-avro",
-      "connector": {
-        "state": "RUNNING",
-        "worker_id": "connect:8083"
-      },
-      "tasks": [
-        {
-          "id": 0,
-          "state": "RUNNING",
-          "worker_id": "connect:8083"
-        }
-      ],
-      "type": "sink"
-    },
-    "info": {
-      "name": "log-sink-avro",
-      "config": {
-        "connector.class": "ch.yax.connect.quickstart.sink.LogSinkConnector",
-        "transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
-        "topics": "random-data-avro",
-        "tasks.max": "1",
-        "log.content": "value",
-        "transforms.UUIDField.field": "my-uuid",
-        "transforms": "UUIDField",
-        "predicates": "EqualsField",
-        "predicates.EqualsField.ignore.case": "true",
-        "transforms.UUIDField.predicate": "EqualsField",
-        "predicates.EqualsField.expected.value": "task id: 0",
-        "predicates.EqualsField.field": "message",
-        "name": "log-sink-avro",
-        "log.level": "info",
-        "predicates.EqualsField.type": " ch.yax.connect.quickstart.predicates.EqualsField$Value",
-        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
-      },
-      "tasks": [
-        {
-          "connector": "log-sink-avro",
-          "task": 0
-        }
-      ],
-      "type": "sink"
-    }
-  },
-  "log-sink-schemaless": {
-    "status": {
-      "name": "log-sink-schemaless",
-      "connector": {
-        "state": "RUNNING",
-        "worker_id": "connect:8083"
-      },
-      "tasks": [
-        {
-          "id": 0,
-          "state": "RUNNING",
-          "worker_id": "connect:8083"
-        }
-      ],
-      "type": "sink"
-    },
-    "info": {
-      "name": "log-sink-schemaless",
-      "config": {
-        "connector.class": "ch.yax.connect.quickstart.sink.LogSinkConnector",
-        "transforms.UUIDField.type": "ch.yax.connect.quickstart.transforms.UUIDField$Value",
-        "topics": "random-data-schemaless",
-        "tasks.max": "1",
-        "log.content": "value",
-        "transforms.UUIDField.field": "my-uuid",
-        "transforms": "UUIDField",
-        "predicates": "EqualsField",
-        "predicates.EqualsField.ignore.case": "true",
-        "transforms.UUIDField.predicate": "EqualsField",
-        "predicates.EqualsField.expected.value": "task id: 0",
-        "predicates.EqualsField.field": "message",
-        "value.converter.schemas.enable": "false",
-        "name": "log-sink-schemaless",
-        "log.level": "info",
-        "predicates.EqualsField.type": " ch.yax.connect.quickstart.predicates.EqualsField$Value",
-        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-        "key.converter": "org.apache.kafka.connect.storage.StringConverter"
-      },
-      "tasks": [
-        {
-          "connector": "log-sink-schemaless",
-          "task": 0
-        }
-      ],
-      "type": "sink"
-    }
-  }
-}
-```
-
-> A detail description of the Kafka Connect Rest API can be found here, https://docs.confluent.io/current/connect/references/restapi.html
+A detail description of the Kafka Connect Rest API can be found here 
+- https://kafka.apache.org/documentation/#connect_rest
+- https://docs.confluent.io/current/connect/references/restapi.html
 
 
 ### How to Install Other Connectors
@@ -513,7 +233,7 @@ services:
 2. Modify the [Dockerfile](Dockerfile) and install the plugin with the `confluent-hub` CLI.
 
 ```dockerfile
-FROM confluentinc/cp-kafka-connect-base:6.0.0
+FROM confluentinc/cp-kafka-connect-base:6.0.1
 
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.4.0
 ```
@@ -521,7 +241,7 @@ RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.4.0
 
 3. Build a connector plugin fat jar with Maven and add it to Kafka Connect plugin path.
 ```dockerfile
-FROM confluentinc/cp-kafka-connect-base:6.0.0
+FROM confluentinc/cp-kafka-connect-base:6.0.1
 
 COPY target/connect-quickstart-*.jar /usr/share/java/quickstart
 ```
@@ -538,10 +258,12 @@ condition is `true` ([KIP-585](https://cwiki.apache.org/confluence/display/KAFKA
 - **Rest Extensions** - with the Connect Rest Extension Plugin ([KIP-285](https://cwiki.apache.org/confluence/display/KAFKA/KIP-285%3A+Connect+Rest+Extension+Plugin)) you can extend the existing Rest API.
 - **Converters** - provide support for translating between Kafka Connect's runtime data format and the raw payload of the Kafka messages.
 
-Here are some examples of general **Kafka Plugins** which can be used with Kafka Connect:
-- **Kafka Consumer / Producer Interceptors** - the Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
+Here are some examples of the general **Kafka Plugins** which can be used with Kafka Connect:
+- **Kafka Consumer** - the Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
 can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be used to extend Kafka Connect.
-- **Metrics Reporter** can be configured to report metrics from Kafka Connect.
+- **Producer Interceptors** - the Producer / Consumer Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors)) 
+can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be used to extend Kafka Connect.
+- **Metrics Reporter** - can be configured to report metrics from Kafka Connect.
 
 ### Source Connector
 The [`RandomSourceConnector`](src/main/java/ch/yax/connect/quickstart/source) will create random data. The output data could look like this:
