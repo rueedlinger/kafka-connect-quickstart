@@ -1,6 +1,7 @@
 # Ready, Steady, Connect - A Kafka Connect Quickstart
 *'Ready, Steady, Connect - A Kafka Connect Quickstart'* is an example project to play around with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect).
 This project contains examples and tools to develop, inspect and deploy Kafka Connect plugins (connectors, transforms, etc.) from a Java Maven project. 
+
 This project uses the following versions:
 - Confluent Platform 6.0.1 (Docker images)
 - Kafka 2.6
