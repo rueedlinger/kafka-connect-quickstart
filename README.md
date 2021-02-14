@@ -40,6 +40,8 @@ This will start the following Docker containers:
 - `connect-ui` => [Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) from Lenses.io (`landoop/kafka-connect-ui`)
 - `kafka-ui` => [Kafka UI](https://github.com/provectus/kafka-ui) from Provectus (`provectuslabs/kafka-ui`)
 
+>**Note** The docker containers have all the prefix *quickstart*. To get 
+> the logs from the container *connect* just run `docker logs quickstart-connect`
 
 
 When all containers are started you can access different services like 
