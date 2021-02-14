@@ -3,8 +3,8 @@
 This project contains examples and tools to develop, inspect and deploy Kafka Connect plugins (connectors, transforms, etc.) from a Java Maven project. 
 
 This project uses the following versions:
-- Confluent Platform 6.0.1 (Docker images)
-- Kafka 2.6
+- Confluent Platform 6.1.0 (Docker images)
+- Kafka 2.7
 - Java 11
 
 The following components are part of the quickstart project:
@@ -39,6 +39,8 @@ This will start the following Docker containers:
 - `kafdrop`=> [Kafdrop](https://github.com/obsidiandynamics/kafdrop) – Kafka Web UI  (`obsidiandynamics/kafdrop`)
 - `connect-ui` => [Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) from Lenses.io (`landoop/kafka-connect-ui`)
 - `kafka-ui` => [Kafka UI](https://github.com/provectus/kafka-ui) from Provectus (`provectuslabs/kafka-ui`)
+
+
 
 When all containers are started you can access different services like 
 - **Kafka Connect Rest API** => http://localhost:8083/
@@ -84,9 +86,9 @@ When Kafka Connect is up and running you should see a response like this.
 
 ```json
 {
-  "version": "6.0.1-ccs",
-  "commit": "9c1fbb3db1e0d69d",
-  "kafka_cluster_id": "614erc9tQx6LxGXtzBvh9w"
+  "version":"6.1.0-ccs",
+  "commit":"5496d92defc9bbe4",
+  "kafka_cluster_id":"614erc9tQx6LxGXtzBvh9w"
 }
 ```
 
@@ -516,3 +518,4 @@ When you have some connectors running you might see some log statement like this
 - [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect)
 - [Confluent Platform Kafka Connect](https://docs.confluent.io/current/connect/index.html)
 - [Docker images for Kafka](https://github.com/confluentinc/kafka-images)
+- [Confluent Supported Versions and Interoperability](https://docs.confluent.io/platform/current/installation/versions-interoperability.html)
