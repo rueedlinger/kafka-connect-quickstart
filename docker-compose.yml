@@ -68,7 +68,7 @@ services:
       - connect
 
   kafka-ui:
-    image: provectuslabs/kafka-ui:0.0.10
+    image: provectuslabs/kafka-ui:0.2.0
     hostname: kafka-ui
     container_name: quickstart-kafka-ui
     depends_on:
