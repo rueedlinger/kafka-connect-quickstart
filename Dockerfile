@@ -9,7 +9,7 @@ RUN mvn -B clean package --file pom.xml
 #########################################################
 # Custom Kafka Connect Docker image
 #########################################################
-FROM confluentinc/cp-kafka-connect-base:6.1.0
+FROM confluentinc/cp-kafka-connect-base:6.2.1
 
 # Install connector plugins with the confluent-hub cli
 # confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.0.0
