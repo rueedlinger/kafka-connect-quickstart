@@ -255,9 +255,9 @@ services:
 2. Modify the [Dockerfile](Dockerfile) and install the plugin with the `confluent-hub` CLI.
 
 ```dockerfile
-FROM confluentinc/cp-kafka-connect-base:6.0.1
+FROM confluentinc/cp-kafka-connect-base:7.0.1
 
-RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.4.0
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
 ```
 
 >
@@ -265,7 +265,7 @@ RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.4.0
 3. Build a connector plugin fat jar with Maven and add it to Kafka Connect plugin path.
 
 ```dockerfile
-FROM confluentinc/cp-kafka-connect-base:6.0.1
+FROM confluentinc/cp-kafka-connect-base:7.0.1
 
 COPY target/connect-quickstart-*.jar /usr/share/java/quickstart
 ```
@@ -365,7 +365,7 @@ After the transform the message contains the new field `my-uuid` with a generate
 
 ### Predicates
 
-####           
+####             
 
 Transformations can be configured with predicates so that the transformation is applied only to records which satisfy a condition.
 The [`EqualsField`](src/main/java/ch/yax/connect/quickstart/predicates) Predicate will test a spefic vale of field and apply the
