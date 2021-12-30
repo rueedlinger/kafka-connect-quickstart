@@ -1,7 +1,7 @@
 version: '3'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:6.2.1
+    image: confluentinc/cp-zookeeper:7.0.1
     hostname: zookeeper
     container_name: quickstart-zookeeper
     ports:
@@ -11,7 +11,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-kafka:6.2.1
+    image: confluentinc/cp-kafka:7.0.1
     hostname: broker
     container_name: quickstart-broker
     depends_on:
@@ -19,6 +19,7 @@ services:
     ports:
       - "29092:29092"
       - "9092:9092"
+      - "9101:9101"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
@@ -28,19 +29,20 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:6.2.1
+    image: confluentinc/cp-schema-registry:7.0.1
     hostname: schema-registry
     container_name: quickstart-schema-registry
     depends_on:
-      - zookeeper
       - broker
     ports:
       - "8081:8081"
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
 
   kafdrop:
     image: obsidiandynamics/kafdrop:3.27.0
@@ -68,7 +70,7 @@ services:
       - connect
 
   kafka-ui:
-    image: provectuslabs/kafka-ui:0.2.0
+    image: provectuslabs/kafka-ui:0.3.1
     hostname: kafka-ui
     container_name: quickstart-kafka-ui
     depends_on:
@@ -88,7 +90,6 @@ services:
     hostname: connect
     container_name: quickstart-connect
     depends_on:
-      - zookeeper
       - broker
       - schema-registry
     ports:
@@ -110,9 +111,11 @@ services:
       #CONNECT_VALUE_CONVERTER: ch.yax.connect.quickstart.converter.AvroDebugConverter
       CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      # CLASSPATH required due to CC-2422
+      # It seems that you should place the interceptors and metric reporter in the Java Classpath.
+      # Workaround: Add the our quickstart fat jar to the Classpath
+      CLASSPATH: /usr/share/java/quickstart/*
+      # CLASSPATH: /usr/share/java/quickstart/*:/usr/share/java/monitoring-interceptors/monitoring-interceptors-7.0.1.jar
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/etc/kafka-connect/jars"
       CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
@@ -130,14 +133,15 @@ services:
 
       # Kafka consumer / producer interceptors
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogConsumerInterceptor"
+      # CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogProducerInterceptor"
+      # CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
 
       # Metrics reporter
       CONNECT_METRIC_REPORTERS: "ch.yax.connect.quickstart.metrics.LogMetricsReporter"
 
       # ENVs for connector configurations
       CONFIG_POLL_INTERVAL_MS: 5000
-
 
     volumes:
       - ./mount:/etc/kafka-connect/jars

@@ -9,7 +9,7 @@ RUN mvn -B clean package --file pom.xml
 #########################################################
 # Custom Kafka Connect Docker image
 #########################################################
-FROM confluentinc/cp-kafka-connect-base:6.2.1
+FROM confluentinc/cp-kafka-connect-base:7.0.1
 
 # Install connector plugins with the confluent-hub cli
 # confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.0.0
@@ -24,8 +24,3 @@ RUN confluent-hub install --no-prompt jcustenborder/kafka-connect-spooldir:lates
 # Add the Maven build target to the Kafka Connect plugin path.
 RUN mkdir /usr/share/java/quickstart
 COPY --from=build-stage /app/target/connect-quickstart-*.jar /usr/share/java/quickstart
-
-# It seems that you should place the interceptors and metric reporter
-# in the Java Classpath.
-# Workaround: Add the fat jar to the Classpath
-ENV CLASSPATH=/usr/share/java/quickstart/*
