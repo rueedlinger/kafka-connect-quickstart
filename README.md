@@ -1,32 +1,32 @@
 # Ready, Steady, Connect - A Kafka Connect Quickstart
 
 *'Ready, Steady, Connect - A Kafka Connect Quickstart'* is an example project to play around
-with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect). This project contains examples and tools
-to develop, inspect and deploy Kafka Connect plugins (connectors, transforms, etc.) from a Java Maven project.
+with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect). This project contains examples and tools to develop,
+inspect and deploy Kafka Connect plugins (connectors, transforms, etc.) from a Java Maven project.
 
 This project uses the following versions:
 
-- Confluent Platform 6.2.1 (Docker images)
-- Kafka 2.8
+- Confluent Platform 7.0.1 (Docker images)
+- Kafka 3.0
 - Java 11
 
 The following components are part of the quickstart project:
 
-- The **Docker image** ([Dockerfile](Dockerfile)) has two parts. A *builder image* to build the example connector from
-  the Java source code and the *main image* to run a Kafka Connect container with all the Kafka Connect plugin examples
-  and some plugins from conlfuent-hub.
+- The **Docker image** ([Dockerfile](Dockerfile)) has two parts. A *builder image* to build the example connector from the Java
+  source code and the *main image* to run a Kafka Connect container with all the Kafka Connect plugin examples and some plugins from
+  conlfuent-hub.
 - The **Java source code** ([src](src)) of all the Kafka Connect plugin (connectors, transforms, etc.) examples.
 - The *Docker Compose* ([docker-compose.yml](docker-compose.yml)) for setting up and running the whole infrastructure (
   Kafka broker, zookeeper, etc).
 
 The following tools are available when you run the whole infrastructure with Docker Compose:
 
-- **[Kafdrop](https://github.com/obsidiandynamics/kafdrop) (Obsidian Dynamics)** is a web UI for viewing Kafka topics
-  and browsing consumer groups.
-- **[Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) (Lenses.io)** is a web tool for Kafka Connect for
-  setting up and managing connectors for multiple connect clusters.
-- **[Kafka UI](https://github.com/provectus/kafka-ui) (Provectus)** is a web UI for monitoring and management of Apache
-  Kafka clusters.
+- **[Kafdrop](https://github.com/obsidiandynamics/kafdrop) (Obsidian Dynamics)** is a web UI for viewing Kafka topics and browsing
+  consumer groups.
+- **[Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) (Lenses.io)** is a web tool for Kafka Connect for setting up
+  and managing connectors for multiple connect clusters.
+- **[Kafka UI](https://github.com/provectus/kafka-ui) (Provectus)** is a web UI for monitoring and management of Apache Kafka
+  clusters.
 
 CI Build:
 
@@ -51,8 +51,7 @@ This will start the following Docker containers:
 - `connect`=> Kafka Connect. This services uses a [custom Docker image](Dockerfile) which is based
   on `confluentinc/cp-kafka-connect-base`.
 - `kafdrop`=> [Kafdrop](https://github.com/obsidiandynamics/kafdrop) – Kafka Web UI  (`obsidiandynamics/kafdrop`)
-- `connect-ui` => [Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) from
-  Lenses.io (`landoop/kafka-connect-ui`)
+- `connect-ui` => [Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) from Lenses.io (`landoop/kafka-connect-ui`)
 - `kafka-ui` => [Kafka UI](https://github.com/provectus/kafka-ui) from Provectus (`provectuslabs/kafka-ui`)
 
 > **Note** The docker containers have all the prefix *quickstart*. To get
@@ -67,8 +66,8 @@ When all containers are started you can access different services like
 - **Kafka UI** from Provectus => http://localhost:8080/
 - **Kafka Connect UI** from Lenses.io => http://localhost:8000/
 
-As default [Avro](https://avro.apache.org/) will be used as value and key convertor. If you want to change the default
-settings just adapt the [docker-compose.yml](docker-compose.yml)
+As default [Avro](https://avro.apache.org/) will be used as value and key convertor. If you want to change the default settings just
+adapt the [docker-compose.yml](docker-compose.yml)
 file for the Kafka Connect service or override the settings in connector config.
 
 ```yaml
@@ -181,8 +180,8 @@ curl -X POST http://localhost:8083/connectors \
 
 ##### JSON (embedded schema)
 
-The same sink can be deployed with JSON converter. Here the message will contain the `schema` and `payload` top-level
-elements in the JSON.
+The same sink can be deployed with JSON converter. Here the message will contain the `schema` and `payload` top-level elements in
+the JSON.
 
 ```bash
 curl -X POST http://localhost:8083/connectors \
@@ -236,8 +235,8 @@ A detail description of the Kafka Connect Rest API can be found here
 
 If you want to install a special Connect plugin you have three options:
 
-1. Download the JAR file and copy it in the [mount](mount) directory. This directory will be automatically mounted as
-   Docker volume to the Kafka Connect plugin path `/etc/kafka-connect/jars`
+1. Download the JAR file and copy it in the [mount](mount) directory. This directory will be automatically mounted as Docker volume
+   to the Kafka Connect plugin path `/etc/kafka-connect/jars`
    (`CONNECT_PLUGIN_PATH`).
 
 ```yaml
@@ -282,27 +281,27 @@ Here are some examples of **Kafka Connect Plugins** which can be used to build y
   is `true` ([KIP-585](https://cwiki.apache.org/confluence/display/KAFKA/KIP-585%3A+Filter+and+Conditional+SMTs)).
 - **Config Providers** - can load configurations for the connectors from external resources.
 - **Rest Extensions** - with the Connect Rest Extension
-  Plugin ([KIP-285](https://cwiki.apache.org/confluence/display/KAFKA/KIP-285%3A+Connect+Rest+Extension+Plugin)) you can
-  extend the existing Rest API.
-- **Converters** - provide support for translating between Kafka Connect's runtime data format and the raw payload of
-  the Kafka messages.
+  Plugin ([KIP-285](https://cwiki.apache.org/confluence/display/KAFKA/KIP-285%3A+Connect+Rest+Extension+Plugin)) you can extend the
+  existing Rest API.
+- **Converters** - provide support for translating between Kafka Connect's runtime data format and the raw payload of the Kafka
+  messages.
 
 Here are some examples of the general **Kafka Plugins** which can be used with Kafka Connect:
 
 - **Kafka Consumer** - the Producer / Consumer
   Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors))
-  can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be
-  used to extend Kafka Connect.
+  can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be used to extend
+  Kafka Connect.
 - **Producer Interceptors** - the Producer / Consumer
   Interceptors ([KIP-42](https://cwiki.apache.org/confluence/display/KAFKA/KIP-42%3A+Add+Producer+and+Consumer+Interceptors))
-  can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be
-  used to extend Kafka Connect.
+  can be used to intercept Kafka messages. These are part of the Kafka Client API and not Connect Plugins, but can be used to extend
+  Kafka Connect.
 - **Metrics Reporter** - can be configured to report metrics from Kafka Connect.
 
 ### Source Connector
 
-The [`RandomSourceConnector`](src/main/java/ch/yax/connect/quickstart/source) will create random data. The output data
-could look like this:
+The [`RandomSourceConnector`](src/main/java/ch/yax/connect/quickstart/source) will create random data. The output data could look
+like this:
 
 ```json
 {
@@ -322,12 +321,12 @@ The following configuration options are possible.
 
 #### LogSinkConnector
 
-The [`LogSinkConnector`](src/main/java/ch/yax/connect/quickstart/sink) will log the output of a message. The following
-configuration options exists.
+The [`LogSinkConnector`](src/main/java/ch/yax/connect/quickstart/sink) will log the output of a message. The following configuration
+options exists.
 
 - `log.level: [INFO, 'DEBUG', 'WARN', 'ERROR', 'TRACE']`. The log level which should be used. Default is `INFO`.
-- `log.content: [ALL, 'KEY', 'VALUE', 'KEY_VALUE']`. Which part of the message should be logged the key, the value, key
-  & value or the whole record (ALL). Default is `ALL`.
+- `log.content: [ALL, 'KEY', 'VALUE', 'KEY_VALUE']`. Which part of the message should be logged the key, the value, key & value or
+  the whole record (ALL). Default is `ALL`.
 - `log.format`. The format of the log message. Default is `{} {}`.
 
 ### Single Message Transforms (SMTs)
@@ -336,8 +335,8 @@ Single Message Transformations (SMTs) are applied to messages as they go through
 
 #### UUIDField
 
-The [`UUIDField`](src/main/java/ch/yax/connect/quickstart/transforms) transforms adds a UUID field to the record. This
-transform can be used to add a UUID as key or value to the Kafka message.
+The [`UUIDField`](src/main/java/ch/yax/connect/quickstart/transforms) transforms adds a UUID field to the record. This transform can
+be used to add a UUID as key or value to the Kafka message.
 
 ```properties
 "transforms":"UUIDField",
@@ -366,15 +365,15 @@ After the transform the message contains the new field `my-uuid` with a generate
 
 ### Predicates
 
-####   
+####           
 
-Transformations can be configured with predicates so that the transformation is applied only to records which satisfy a
-condition. The [`EqualsField`](src/main/java/ch/yax/connect/quickstart/predicates) Predicate will test a spefic vale of
-field and apply the transformation only when the value is equal to value set by `expected.value`.
+Transformations can be configured with predicates so that the transformation is applied only to records which satisfy a condition.
+The [`EqualsField`](src/main/java/ch/yax/connect/quickstart/predicates) Predicate will test a spefic vale of field and apply the
+transformation only when the value is equal to value set by `expected.value`.
 
-For example to enable the Predicate for the existing transform `UUIDField` you add the following configuration to your
-connector. This will add the `UUIDField` transform only when the value in the `message` field ìs equals to the expected
-value `task id: 0`. With `ignore.case=true` set to true lowercase and uppercase letters are treated as equivalent.
+For example to enable the Predicate for the existing transform `UUIDField` you add the following configuration to your connector.
+This will add the `UUIDField` transform only when the value in the `message` field ìs equals to the expected value `task id: 0`.
+With `ignore.case=true` set to true lowercase and uppercase letters are treated as equivalent.
 
 ```properties
 transforms.UUIDField.predicate=EqualsField
@@ -408,8 +407,7 @@ CONNECT_CONFIG_PROVIDERS_ENV_PARAM_BLACKLIST: "foo,bar"
 With the pattern `${<CONFIG_RROVIDER>:<PATH>:<KEY>}` you can access the config values from your config
 with `${env:my-path:my-value}`. Note the `path` is ignored by `EnvironmentConfigProvider` and has no effect.
 
-You could use the env `CONFIG_POLL_INTERVAL_MS` to set the configuration property `poll.interval.ms` in
-the `RandomSourceConnector`
+You could use the env `CONFIG_POLL_INTERVAL_MS` to set the configuration property `poll.interval.ms` in the `RandomSourceConnector`
 configuration.
 
 ```properties
@@ -486,8 +484,8 @@ CONNECT_REST_EXTENSION_CLASSES: "ch.yax.connect.quickstart.rest.HealthExtension"
 #### AvroDebugConvertor
 
 The [`AvroDebugConvertor`](src/main/java/ch/yax/connect/quickstart/converter) is a Wrapper around
-the `io.confluent.connect.avro.AvroConverter`. The `AvroDebugConvertor` will just log the internal connect data
-structure which was created or received.
+the `io.confluent.connect.avro.AvroConverter`. The `AvroDebugConvertor` will just log the internal connect data structure which was
+created or received.
 
 ```yaml
 CONNECT_VALUE_CONVERTER: ch.yax.connect.quickstart.converter.AvroDebugConverter
@@ -531,8 +529,8 @@ CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.Log
 
 #### LogProducerInterceptor
 
-The [`LogProducerInterceptor`](src/main/java/ch/yax/connect/quickstart/interceptor)  logs part of the Kafka message
-topic, timestamp and partition) before it's stored in the topic.
+The [`LogProducerInterceptor`](src/main/java/ch/yax/connect/quickstart/interceptor)  logs part of the Kafka message topic, timestamp
+and partition) before it's stored in the topic.
 
 To enable the `LogProducerInterceptor` add the following configuration.
 
@@ -540,8 +538,8 @@ To enable the `LogProducerInterceptor` add the following configuration.
 CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "ch.yax.connect.quickstart.interceptor.LogProducerInterceptor"
 ```
 
-*Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. Because
-adding your Interceptors to the `CONNECT_PLUGIN_PATH` might not work.
+*Note*: In some cases you might add the JAR with your Interceptor into the `CLASSPATH` environment variable. Because adding your
+Interceptors to the `CONNECT_PLUGIN_PATH` might not work.
 
 ```dockerfile
 ENV CLASSPATH=/usr/share/java/quickstart/*
@@ -559,9 +557,9 @@ To enable the `LogMetricsReporter` add the following configuration.
 CONNECT_METRIC_REPORTERS: "ch.yax.connect.quickstart.metrics.LogMetricsReporter"
 ```
 
-You have to add the JAR of the Metrics Report in the Java classpath. Because adding your JAR to
-the `CONNECT_PLUGIN_PATH` will not work. If you don't put the JAR in the classpath you get a `ClassNotFoundException`.
-For a production case you should separate Kafka Connect plugins from the `MetricsReporter`s.
+You have to add the JAR of the Metrics Report in the Java classpath. Because adding your JAR to the `CONNECT_PLUGIN_PATH` will not
+work. If you don't put the JAR in the classpath you get a `ClassNotFoundException`. For a production case you should separate Kafka
+Connect plugins from the `MetricsReporter`s.
 
 ```dockerfile
 ENV CLASSPATH=/usr/share/java/quickstart/*
@@ -579,3 +577,6 @@ When you have some connectors running you might see some log statement like this
 - [Confluent Platform Kafka Connect](https://docs.confluent.io/current/connect/index.html)
 - [Docker images for Kafka](https://github.com/confluentinc/kafka-images)
 - [Confluent Supported Versions and Interoperability](https://docs.confluent.io/platform/current/installation/versions-interoperability.html)
+- [Build Your Own Apache Kafka Demos](https://docs.confluent.io/platform/current/tutorials/build-your-own-demos.html)
+    - [docker-compose.yml files for cp-all-in-one, cp-all-in-one-community, cp-all-in-one-cloud](https://docs.confluent.io/platform/current/installation/versions-interoperability.html)
+  
