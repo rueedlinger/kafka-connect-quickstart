@@ -2,7 +2,7 @@ name: Build Java & Docker
 
 on:
   push:
-    branches: [ master ]
+    branches: [ '**' ]
   pull_request:
     branches: [ master ]
 
