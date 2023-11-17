@@ -1,7 +1,7 @@
 version: '3'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.0.1
+    image: confluentinc/cp-zookeeper:7.5.2
     hostname: zookeeper
     container_name: quickstart-zookeeper
     ports:
@@ -11,7 +11,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-kafka:7.0.1
+    image: confluentinc/cp-kafka:7.5.2
     hostname: broker
     container_name: quickstart-broker
     depends_on:
@@ -33,7 +33,7 @@ services:
       KAFKA_JMX_HOSTNAME: localhost
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:7.0.1
+    image: confluentinc/cp-schema-registry:7.5.2
     hostname: schema-registry
     container_name: quickstart-schema-registry
     depends_on:
@@ -43,20 +43,6 @@ services:
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
-
-  kafdrop:
-    image: obsidiandynamics/kafdrop:3.27.0
-    hostname: kafdrop
-    container_name: quickstart-schema-kafdrop
-    ports:
-      - "8082:9000"
-    environment:
-      KAFKA_BROKERCONNECT: "broker:29092"
-      SCHEMAREGISTRY_CONNECT: "http://schema-registry:8081"
-    depends_on:
-      - zookeeper
-      - broker
-      - schema-registry
 
   connect-ui:
     image: landoop/kafka-connect-ui:0.9.7
@@ -70,7 +56,7 @@ services:
       - connect
 
   kafka-ui:
-    image: provectuslabs/kafka-ui:0.3.1
+    image: provectuslabs/kafka-ui:v0.7.1
     hostname: kafka-ui
     container_name: quickstart-kafka-ui
     depends_on:
@@ -84,6 +70,8 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "broker:29092"
       KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
       KAFKA_CLUSTERS_0_SCHEMAREGISTRY: "http://schema-registry:8081"
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: "kafka connect"
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: "http://connect:8083"
 
   connect:
     build: .
@@ -113,7 +101,7 @@ services:
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       # CLASSPATH required due to CC-2422
       # It seems that you should place the interceptors and metric reporter in the Java Classpath.
-      # Workaround: Add the our quickstart fat jar to the Classpath
+      # Workaround: Add our quickstart fat jar to the Classpath
       CLASSPATH: /usr/share/java/quickstart/*
       # CLASSPATH: /usr/share/java/quickstart/*:/usr/share/java/monitoring-interceptors/monitoring-interceptors-7.0.1.jar
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/etc/kafka-connect/jars"

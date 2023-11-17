@@ -2,7 +2,7 @@ package ch.yax.connect.quickstart.source;
 
 import org.apache.kafka.connect.source.SourceTaskContext;
 import org.apache.kafka.connect.storage.OffsetStorageReader;
-import org.awaitility.Duration;
+import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -33,7 +33,7 @@ public class RandomSourceTaskTest {
         tasks.start(Map.of("topic", "foo", RandomSourceConfig.POLL_INTERVAL_CONFIG, "500"));
 
         // at least after one second we must have a result
-        await().atMost(Duration.TWO_SECONDS)
+        await().atMost(Durations.TWO_SECONDS)
                 .until(() -> hasElements(tasks.poll()));
 
     }
