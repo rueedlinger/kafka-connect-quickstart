@@ -6,8 +6,8 @@ inspect and deploy Kafka Connect plugins (connectors, transforms, etc.) from a J
 
 This project uses the following versions:
 
-- Confluent Platform 7.0.1 (Docker images)
-- Kafka 3.0
+- Confluent Platform 7.5.2 (Docker images)
+- Kafka 3.5.x 
 - Java 11
 
 The following components are part of the quickstart project:
@@ -21,8 +21,6 @@ The following components are part of the quickstart project:
 
 The following tools are available when you run the whole infrastructure with Docker Compose:
 
-- **[Kafdrop](https://github.com/obsidiandynamics/kafdrop) (Obsidian Dynamics)** is a web UI for viewing Kafka topics and browsing
-  consumer groups.
 - **[Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) (Lenses.io)** is a web tool for Kafka Connect for setting up
   and managing connectors for multiple connect clusters.
 - **[Kafka UI](https://github.com/provectus/kafka-ui) (Provectus)** is a web UI for monitoring and management of Apache Kafka
@@ -40,7 +38,7 @@ CI Build:
 To use the custom sink and source connectors we have to build and start the Docker containers.
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 This will start the following Docker containers:
@@ -50,7 +48,6 @@ This will start the following Docker containers:
 - `schema-registry`=> Confluent Schema Registry (`confluentinc/cp-schema-registry`)
 - `connect`=> Kafka Connect. This services uses a [custom Docker image](Dockerfile) which is based
   on `confluentinc/cp-kafka-connect-base`.
-- `kafdrop`=> [Kafdrop](https://github.com/obsidiandynamics/kafdrop) – Kafka Web UI  (`obsidiandynamics/kafdrop`)
 - `connect-ui` => [Kafka Connect UI](https://github.com/lensesio/kafka-connect-ui) from Lenses.io (`landoop/kafka-connect-ui`)
 - `kafka-ui` => [Kafka UI](https://github.com/provectus/kafka-ui) from Provectus (`provectuslabs/kafka-ui`)
 
@@ -61,7 +58,6 @@ This will start the following Docker containers:
 When all containers are started you can access different services like
 
 - **Kafka Connect Rest API** => http://localhost:8083/
-- **Kafdrop** => http://localhost:8082/
 - **Schema Registry** => http://localhost:8081/
 - **Kafka UI** from Provectus => http://localhost:8080/
 - **Kafka Connect UI** from Lenses.io => http://localhost:8000/
@@ -103,9 +99,9 @@ When Kafka Connect is up and running you should see a response like this.
 
 ```json
 {
-  "version": "6.1.0-ccs",
-  "commit": "5496d92defc9bbe4",
-  "kafka_cluster_id": "614erc9tQx6LxGXtzBvh9w"
+  "version":"7.5.2-ccs",
+  "commit":"8f1346537b7bbf271a32d604161e972ff9b9f9a3",
+  "kafka_cluster_id":"IU94lDIuQ4WRpRYToeqwmA"
 }
 ```
 
@@ -241,21 +237,17 @@ If you want to install a special Connect plugin you have three options:
 
 ```yaml
 services:
-
   connect:
-
     environment:
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/etc/kafka-connect/jars"
-
     volumes:
       - ./mount:/etc/kafka-connect/jars
-
 ```
 
 2. Modify the [Dockerfile](Dockerfile) and install the plugin with the `confluent-hub` CLI.
 
 ```dockerfile
-FROM confluentinc/cp-kafka-connect-base:7.0.1
+FROM confluentinc/cp-kafka-connect-base:7.5.2
 
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
 ```
@@ -265,7 +257,7 @@ RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
 3. Build a connector plugin fat jar with Maven and add it to Kafka Connect plugin path.
 
 ```dockerfile
-FROM confluentinc/cp-kafka-connect-base:7.0.1
+FROM confluentinc/cp-kafka-connect-base:7.5.2
 
 COPY target/connect-quickstart-*.jar /usr/share/java/quickstart
 ```
@@ -425,6 +417,11 @@ The [`HealthExtension`](src/main/java/ch/yax/connect/quickstart/rest) is Rest ex
 API (http://localhost:8083/health)
 to Kafka Connect.
 
+
+```bash
+curl "http://localhost:8083/health"
+```
+
 The response from the health API (`/health`) might look something like this:
 
 ```json
@@ -493,13 +490,13 @@ CONNECT_VALUE_CONVERTER: ch.yax.connect.quickstart.converter.AvroDebugConverter
 
 This will display a log output the data structure which was created.
 
-```bash
+```
 quickstart-connect | [2021-02-10 22:09:22,907] INFO Topic random-data-avro, created connect data 'SchemaAndValue{schema=Schema{ch.yax.connect.quickstart.source.RandomData:STRUCT}, value=Struct{value=7476346340551272290,count=632,message=Task Id: 1,timestamp=Wed Feb 10 22:09:22 GMT 2021}}' (ch.yax.connect.quickstart.converter.AvroDebugConverter)
 ```
 
 It will also log the data structure which was received.
 
-```bash
+```
 quickstart-connect | [2021-02-10 22:09:28,377] INFO Topic random-data-avro, got connect data 'Struct{value=6085501730739912467,count=633,message=Task Id: 1,timestamp=Wed Feb 10 22:09:28 GMT 2021}' and schema 'Schema{ch.yax.connect.quickstart.source.RandomData:STRUCT}' (ch.yax.connect.quickstart.converter.AvroDebugConverter)
 ```
 
@@ -567,7 +564,7 @@ ENV CLASSPATH=/usr/share/java/quickstart/*
 
 When you have some connectors running you might see some log statement like this.
 
-```bash
+```
 [2021-02-10 23:09:41,815] INFO metricChange: name: MetricName [name=record-send-total, group=producer-topic-metrics, description=The total number of records sent for a topic., tags={client-id=producer-1, topic=docker-connect-offsets}], value: 0.0 (ch.yax.connect.quickstart.metrics.LogMetricsReporter)
 ```
 
