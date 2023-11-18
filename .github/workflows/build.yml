@@ -45,4 +45,4 @@ jobs:
         with:
           file: strimzi.Dockerfile
           push: false
-          tags: quickstart:latest
+          tags: quickstart-strimzi:latest
