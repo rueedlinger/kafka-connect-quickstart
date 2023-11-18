@@ -1,0 +1,123 @@
+version: '3'
+services:
+
+  zookeeper:
+    image: quay.io/strimzi/kafka:0.38.0-kafka-3.6.0
+    hostname: zookeeper
+    container_name: quickstart-zookeeper-strimzi
+    command: [
+      "sh", "-c",
+      "bin/zookeeper-server-start.sh config/zookeeper.properties"
+    ]
+    ports:
+      - "2181:2181"
+    environment:
+      LOG_DIR: /tmp/logs
+
+  broker:
+    image: quay.io/strimzi/kafka:0.38.0-kafka-3.6.0
+    hostname: broker
+    container_name: quickstart-broker-strimzi
+    command: [
+      "sh", "-c",
+      "bin/kafka-server-start.sh config/server.properties --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} --override listener.security.protocol.map=$${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP} --override inter.broker.listener.name=$${KAFKA_INTER_BROKER_LISTENER_NAME}"
+    ]
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      LOG_DIR: "/tmp/logs"
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://broker:29092,OUTSIDE://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.5.2
+    hostname: schema-registry
+    container_name: quickstart-schema-registry-strimzi
+    depends_on:
+      - broker
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+
+  connect-ui:
+    image: landoop/kafka-connect-ui:0.9.7
+    hostname: connect-ui
+    container_name: quickstart-connect-ui-strimzi
+    ports:
+      - "8000:8000"
+    environment:
+      CONNECT_URL: "connect:8083"
+    depends_on:
+      - connect
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.1
+    hostname: kafka-ui
+    container_name: quickstart-kafka-ui-strimzi
+    depends_on:
+      - zookeeper
+      - broker
+      - schema-registry
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "kafka cluster"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "broker:29092"
+      KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: "http://schema-registry:8081"
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: "kafka connect cluster"
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: "http://connect:8083"
+
+  connect:
+    #image: quay.io/strimzi/kafka:0.38.0-kafka-3.6.0
+    build:
+      context: .
+      dockerfile: strimzi.Dockerfile
+    hostname: connect
+    container_name: quickstart-connect-strimzi
+    restart: always
+    depends_on:
+      - broker
+      - schema-registry
+    ports:
+      - "8083:8083"
+    command: ["/opt/kafka/kafka_connect_run.sh"]
+    environment:
+      KAFKA_CONNECT_BOOTSTRAP_SERVERS: "broker:29092"
+      KAFKA_LOG4J_OPTS: "-Dlog4j.configuration=file:/opt/kafka/config/log4j.properties"
+      KAFKA_CONNECT_CONFIGURATION: |
+        config.storage.topic=connect-configs
+        offset.storage.topic=connect-offsets
+        status.storage.topic=connect-status
+        config.storage.replication.factor=1
+        offset.storage.replication.factor=1
+        status.storage.replication.factor=1
+        value.converter=io.confluent.connect.avro.AvroConverter
+        value.converter.schema.registry.url=http://schema-registry:8081
+        key.converter=io.confluent.connect.avro.AvroConverter
+        key.converter.schema.registry.url=http://schema-registry:8081      
+        group.id=connect-cluster
+        connector.client.config.override.policy=All
+        access.control.allow.origin=*
+        access.control.allow.methods=GET,OPTIONS,HEAD,POST,PUT,DELETE
+        config.providers=env
+        config.providers.env.class=ch.yax.connect.quickstart.config.provider.EnvironmentConfigProvider
+        config.providers.env.param.blacklist=foo,bar        
+        rest.extension.classes=ch.yax.connect.quickstart.rest.HealthExtension
+        producer.interceptor.classes=ch.yax.connect.quickstart.interceptor.LogProducerInterceptor
+        consumer.interceptor.classes=ch.yax.connect.quickstart.interceptor.LogConsumerInterceptor
+        metric.reporters=ch.yax.connect.quickstart.metrics.LogMetricsReporter
+
+      # It seems that you should place the interceptors and metric reporter in the Java Classpath.
+      # Workaround: Add our quickstart fat jar to the Classpath
+      CLASSPATH: "/opt/kafka/plugins/quickstart/*"
+
+      # ENVs for connector configurations
+      CONFIG_POLL_INTERVAL_MS: 5000

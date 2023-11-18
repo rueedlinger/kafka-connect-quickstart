@@ -5,9 +5,8 @@ with [Apache Kafka Connect](https://kafka.apache.org/documentation/#connect). Th
 inspect and deploy Kafka Connect plugins (connectors, transforms, etc.) from a Java Maven project.
 
 This project uses the following versions:
-
 - Confluent Platform 7.5.2 (Docker images)
-- Kafka 3.5.x 
+- Kafka 3.5.x
 - Java 11
 
 The following components are part of the quickstart project:
@@ -16,7 +15,7 @@ The following components are part of the quickstart project:
   source code and the *main image* to run a Kafka Connect container with all the Kafka Connect plugin examples and some plugins from
   conlfuent-hub.
 - The **Java source code** ([src](src)) of all the Kafka Connect plugin (connectors, transforms, etc.) examples.
-- The *Docker Compose* ([docker-compose.yml](docker-compose.yml)) for setting up and running the whole infrastructure (
+- The *Docker Compose* ([docker-compose.yaml](docker-compose.yaml)) for setting up and running the whole infrastructure (
   Kafka broker, zookeeper, etc).
 
 The following tools are available when you run the whole infrastructure with Docker Compose:
@@ -30,6 +29,22 @@ CI Build:
 
 - Builds the Java code and Docker
   image. ![Build Java & Docker](https://github.com/rueedlinger/kafka-connect-quickstart/workflows/Build%20Java%20&%20Docker/badge.svg)
+
+## Strimzi
+The examples were adapted to the apache kafka [Strimzi](https://strimzi.io/) Docker images.
+
+- Strimzi 0.38.0 (Docker images)
+- Kafka 3.6.x
+- Java 11
+
+When you want to run the examples with Strimzi based images just run
+
+```bash
+docker compose -f strimzi-compose.yaml up --build
+```
+
+For more details have a look at the files [strimzi.Dockerfile](strimzi.Dockerfile) and [strimzi-compose.yaml](strimzi-compose.yaml).
+
 
 ## Getting Started
 
@@ -63,7 +78,7 @@ When all containers are started you can access different services like
 - **Kafka Connect UI** from Lenses.io => http://localhost:8000/
 
 As default [Avro](https://avro.apache.org/) will be used as value and key convertor. If you want to change the default settings just
-adapt the [docker-compose.yml](docker-compose.yml)
+adapt the [docker-compose.yml](docker-compose.yaml)
 file for the Kafka Connect service or override the settings in connector config.
 
 ```yaml
@@ -575,5 +590,3 @@ When you have some connectors running you might see some log statement like this
 - [Docker images for Kafka](https://github.com/confluentinc/kafka-images)
 - [Confluent Supported Versions and Interoperability](https://docs.confluent.io/platform/current/installation/versions-interoperability.html)
 - [Build Your Own Apache Kafka Demos](https://docs.confluent.io/platform/current/tutorials/build-your-own-demos.html)
-    - [docker-compose.yml files for cp-all-in-one, cp-all-in-one-community, cp-all-in-one-cloud](https://docs.confluent.io/platform/current/installation/versions-interoperability.html)
-  

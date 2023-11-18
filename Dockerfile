@@ -1,3 +1,4 @@
+ARG CONFLUENT_VERSION=7.5.2
 #########################################################
 # Maven builder image to build the custom connectors
 #########################################################
@@ -9,7 +10,7 @@ RUN mvn -B clean package --file pom.xml
 #########################################################
 # Custom Kafka Connect Docker image
 #########################################################
-FROM confluentinc/cp-kafka-connect-base:7.5.2
+FROM confluentinc/cp-kafka-connect-base:${CONFLUENT_VERSION}
 
 # Install connector plugins with the confluent-hub cli
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:latest
